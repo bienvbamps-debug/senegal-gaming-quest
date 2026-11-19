@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Senegal Gaming Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: arcade select-screen energy, delivered with the calm of a national institution.
+   IDEA: a game's character-select and level-up HUD; the registration is a 4-level run.
+   PICTURE: an orbit HUD — Senegal's green star at the core, eight role glyphs on the ring.
+   COLOUR and TYPE: night navy, neon green lead, cyan support, violet accent, flag stripe; Chakra Petch + Inter.
+   LAYOUT: one column for missions, cards grid for players, panels grid for organisers. */
+:root{color-scheme:dark;--bg:#060a18;--bg2:#0b1230;--panel:rgba(15,23,54,.78);--panel2:#111a40;--line:rgba(130,165,255,.18);--line2:rgba(130,165,255,.32);--ink:#eaf0ff;--mute:#9eabd3;--g:#39ff88;--c:#22d3ee;--v:#a78bfa;--warn:#ffb547;--bad:#ff5d73;--sg:#00853f;--sy:#fdef42;--sr:#e31b23;--r:14px;--hf:"Chakra Petch",system-ui,sans-serif}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:72px;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(900px 500px at 85% -10%,rgba(167,139,250,.18),transparent 60%),radial-gradient(700px 500px at -10% 30%,rgba(34,211,238,.12),transparent 60%),radial-gradient(600px 400px at 50% 110%,rgba(57,255,136,.10),transparent 60%),linear-gradient(var(--bg),var(--bg2))}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(130,165,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(130,165,255,.05) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(#000,transparent 85%)}
+#fx{position:fixed;inset:0;z-index:-1;pointer-events:none}
+h1,h2,h3{font-family:var(--hf);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:.01em}
+a{color:var(--c)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.flag{height:4px;background:linear-gradient(90deg,var(--sg) 0 33.3%,var(--sy) 33.3% 66.6%,var(--sr) 66.6%)}
+header.top{position:sticky;top:0;z-index:30;background:rgba(6,10,24,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:1240px;margin:0 auto;padding:10px max(4vw,14px)}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--hf);font-weight:700;font-size:15px;color:var(--ink);text-decoration:none;margin-inline-end:auto;background:none;border:0;cursor:pointer;padding:6px 0}
+.logo svg{width:28px;height:28px}
+.tog{display:flex;gap:6px;flex-wrap:wrap}
+.ib{min-height:40px;min-width:40px;padding:0 12px;border-radius:10px;border:1px solid var(--line2);background:rgba(255,255,255,.03);color:var(--ink);font:600 13px Inter,sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.ib[aria-pressed=true]{border-color:var(--g);color:var(--g);background:rgba(57,255,136,.08)}
+.ib svg{width:18px;height:18px;flex:none}
+@media(max-width:600px){.logo span{font-size:13px}.tog .ib span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.tog .ib{padding:0 10px}}
+:focus-visible{outline:3px solid var(--c);outline-offset:2px}
+main{max-width:1240px;margin:0 auto;padding:clamp(18px,3vw,40px) max(4vw,14px) 80px}
+.btn{--bc:var(--g);position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;border:0;cursor:pointer;font:700 16px var(--hf);letter-spacing:.04em;color:#03130a;background:var(--bc);clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);transition:transform .15s,filter .15s;box-shadow:0 0 0 transparent}
+.btn:hover{filter:brightness(1.12) drop-shadow(0 0 12px var(--bc));transform:translateY(-1px)}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:transparent;color:var(--ink);outline:1px solid var(--line2);outline-offset:-1px;clip-path:none;border-radius:12px}
+.btn.ghost:hover{outline-color:var(--c);filter:none}
+.btn[disabled]{opacity:.45;cursor:not-allowed;filter:none;transform:none}
+.btn.big{min-height:62px;font-size:18px;padding:0 34px}
+.btn.pulse::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);transform:translateX(-120%);animation:shine 3.2s infinite}
+@keyframes shine{60%,100%{transform:translateX(120%)}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:clamp(16px,2.5vw,28px)}
+.muted{color:var(--mute)}
+.small{font-size:13px}
+/* home */
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(20px,4vw,56px);align-items:center;min-height:min(78vh,720px)}
+.kicker{font:600 14px var(--hf);color:var(--c);display:flex;gap:8px;align-items:center;margin-bottom:14px}
+.kicker i{width:22px;height:2px;background:var(--c);display:block}
+.title{font-size:clamp(42px,7.4vw,88px);font-weight:700;line-height:.95;background:linear-gradient(95deg,#fff 10%,var(--g) 55%,var(--c));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 22px rgba(57,255,136,.25))}
+.sig{font:600 15px var(--hf);color:var(--v);margin:14px 0 18px}
+.lead{font-size:clamp(18px,2.2vw,22px);font-weight:600;margin:0 0 8px}
+.ev{margin:22px 0;display:grid;gap:10px}
+.ev h2{font-size:20px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--mute);font-size:15px}
+.meta span{display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
+.meta svg{width:16px;height:16px;color:var(--c)}
+.obj{margin:4px 0 0;padding:0;list-style:none;display:grid;gap:6px}
+.obj li{display:flex;gap:10px;align-items:flex-start}
+.obj li::before{content:"";flex:none;width:8px;height:8px;margin-top:8px;background:var(--g);transform:rotate(45deg);box-shadow:0 0 8px var(--g)}
+.cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:8px}
+.timer{display:inline-flex;gap:8px;align-items:center;color:var(--g);font:600 14px var(--hf)}
+.timer svg{width:18px;height:18px}
+.orbit{position:relative;aspect-ratio:1;width:100%;max-width:520px;justify-self:center}
+.orbit svg{width:100%;height:100%;overflow:visible}
+.spin{transform-origin:200px 200px;animation:spin 70s linear infinite}
+.spin.r{animation-direction:reverse;animation-duration:110s}
+@keyframes spin{to{transform:rotate(360deg)}}
+.node{transition:transform .2s}
+.notice{margin-top:16px;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,181,71,.4);background:rgba(255,181,71,.08);color:#ffd9a0;font-size:14px}
+/* HUD progress */
+.hud{display:grid;gap:10px;margin-bottom:22px}
+.hudrow{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font:600 14px var(--hf)}
+.hudrow b{color:var(--g)}
+.segs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.seg{height:12px;border-radius:3px;background:rgba(255,255,255,.07);border:1px solid var(--line);position:relative;overflow:hidden;transform:skewX(-18deg)}
+.seg.on{background:linear-gradient(90deg,var(--g),var(--c));box-shadow:0 0 12px rgba(57,255,136,.5);border-color:transparent}
+.seg.cur::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(57,255,136,.6),transparent);animation:scan 1.6s infinite}
+@keyframes scan{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.mhead{display:grid;gap:8px;margin-bottom:22px}
+.mtag{font:700 13px var(--hf);color:var(--c)}
+.mhead h1{font-size:clamp(28px,4.4vw,44px)}
+/* player cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:14px}
+@media(max-width:600px){.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}
+.pc{--rc:var(--g);position:relative;text-align:start;padding:0;border:1px solid var(--line2);border-radius:16px;background:var(--panel2);color:var(--ink);cursor:pointer;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,border-color .2s,box-shadow .2s;font:inherit}
+.pc:hover,.pc:focus-visible{transform:translateY(-4px);border-color:var(--rc);box-shadow:0 10px 30px -10px var(--rc)}
+.pc[aria-checked=true]{border-color:var(--rc);box-shadow:0 0 0 2px var(--rc),0 0 30px -6px var(--rc)}
+.pc .art{position:relative;aspect-ratio:16/10;display:grid;place-items:center;background:radial-gradient(circle at 50% 60%,color-mix(in srgb,var(--rc) 40%,transparent),transparent 65%),repeating-linear-gradient(60deg,transparent 0 14px,rgba(255,255,255,.035) 14px 15px),linear-gradient(160deg,#141f4d,#0a1029)}
+.pc .art svg{width:46%;height:auto;max-height:80%;color:var(--rc);filter:drop-shadow(0 0 10px var(--rc));transition:transform .25s}
+.pc:hover .art svg{transform:scale(1.08) rotate(-3deg)}
+.pc .lv{position:absolute;top:8px;inset-inline-start:8px;font:700 11px var(--hf);padding:3px 7px;border-radius:6px;background:rgba(0,0,0,.45);color:var(--rc)}
+.pc .ok{position:absolute;top:8px;inset-inline-end:8px;width:26px;height:26px;border-radius:50%;background:var(--rc);color:#04130b;display:none;place-items:center}
+.pc[aria-checked=true] .ok{display:grid}
+.pc .tx{padding:12px 14px 14px;display:grid;gap:4px}
+.pc h3{font-size:18px;color:var(--rc)}
+.pc .role{font-weight:600;font-size:14px}
+.pc .desc{font-size:13px;color:var(--mute);line-height:1.4}
+@media(max-width:600px){.pc .desc{display:none}.pc h3{font-size:15px}.pc .role{font-size:13px}}
+/* forms */
+.form{display:grid;gap:18px;max-width:760px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media(max-width:600px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.fld{display:grid;gap:6px}
+.fld>label,.lbl{font-weight:600;font-size:15px}
+.opt{color:var(--mute);font-weight:400;font-size:13px}
+.req{color:var(--g)}
+input[type=text],input[type=email],input[type=tel],input[type=url],input[type=number],input[type=search],input[type=date],select,textarea{width:100%;min-height:48px;padding:11px 14px;font:16px Inter,sans-serif;color:var(--ink);background:rgba(5,9,26,.85);border:1px solid var(--line2);border-radius:12px;transition:border-color .15s,box-shadow .15s}
+textarea{min-height:110px;resize:vertical}
+select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--c) 50%),linear-gradient(135deg,var(--c) 50%,transparent 50%);background-position:calc(100% - 20px) 21px,calc(100% - 15px) 21px;background-size:5px 5px;background-repeat:no-repeat;padding-inline-end:40px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c);box-shadow:0 0 0 3px rgba(34,211,238,.25)}
+[aria-invalid=true]{border-color:var(--bad)!important}
+.err{color:var(--bad);font-size:13px;min-height:0}
+.hint{color:var(--mute);font-size:13px}
+.phone{display:grid;grid-template-columns:120px minmax(0,1fr);gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:44px;padding:8px 14px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.03);color:var(--ink);font:500 14px Inter,sans-serif;cursor:pointer;text-align:start;transition:all .15s}
+.chip:hover{border-color:var(--c)}
+.chip[aria-pressed=true]{background:rgba(57,255,136,.12);border-color:var(--g);color:#c9ffe0;box-shadow:0 0 12px -4px var(--g)}
+.chip[aria-pressed=true]::before{content:"✓ ";color:var(--g)}
+.chip[aria-disabled=true]{opacity:.4;cursor:not-allowed}
+.quests{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:10px}
+.quests .chip{border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center}
+.quests .chip::before{display:none}
+.qi{flex:none;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:rgba(34,211,238,.1);color:var(--c);font:700 13px var(--hf)}
+.chip[aria-pressed=true] .qi{background:var(--g);color:#04130b}
+.slot{display:flex;gap:6px;align-items:center;font:600 14px var(--hf);color:var(--mute)}
+.slot i{width:22px;height:8px;border-radius:2px;background:rgba(255,255,255,.1);display:block}
+.slot i.on{background:var(--g);box-shadow:0 0 8px var(--g)}
+.count{text-align:end;font-size:13px;color:var(--mute)}
+.nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:26px;max-width:760px}
+.check{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid var(--line2);border-radius:12px;background:rgba(255,255,255,.02);cursor:pointer}
+.check input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:var(--g)}
+.linkb{background:none;border:0;color:var(--c);text-decoration:underline;cursor:pointer;font:inherit;padding:0}
+/* player card / pass */
+.pass{--rc:var(--g);position:relative;max-width:440px;width:100%;border-radius:20px;padding:2px;background:linear-gradient(135deg,var(--rc),var(--v),var(--c));box-shadow:0 20px 60px -20px var(--rc)}
+.pass>div{border-radius:18px;background:radial-gradient(400px 200px at 100% 0,color-mix(in srgb,var(--rc) 25%,transparent),transparent),linear-gradient(170deg,#121b45,#070c22);padding:22px;display:grid;gap:14px;overflow:hidden;position:relative}
+.pass>div::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.08) 45%,transparent 55%);pointer-events:none;animation:holo 5s ease-in-out infinite}
+@keyframes holo{0%,100%{transform:translateX(-60%)}50%{transform:translateX(60%)}}
+.ph{display:flex;justify-content:space-between;align-items:center;gap:10px;font:700 12px var(--hf);color:var(--mute)}
+.pname{font:700 clamp(24px,4vw,30px)/1.1 var(--hf)}
+.prole{display:flex;gap:10px;align-items:center;font:600 16px var(--hf);color:var(--rc)}
+.prole svg{width:28px;height:28px}
+.pgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px;font-size:14px}
+.pgrid dt{color:var(--mute);font-size:12px}
+.pgrid dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.ptags{display:flex;flex-wrap:wrap;gap:6px}
+.ptags span{font-size:12px;padding:4px 9px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.04)}
+.qr{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center;padding-top:12px;border-top:1px dashed var(--line2)}
+.qr .code{width:120px;height:120px;background:#fff;border-radius:10px;padding:6px}
+.qr .code svg{width:100%;height:100%;display:block}
+.pid{font:700 20px var(--hf);color:var(--g);letter-spacing:.06em;white-space:nowrap}
+.stat{display:inline-flex;align-items:center;gap:6px;font:700 12px var(--hf);padding:4px 10px;border-radius:999px;background:rgba(57,255,136,.12);color:var(--g);border:1px solid rgba(57,255,136,.4);white-space:nowrap}
+.stat.w{background:rgba(255,181,71,.12);color:var(--warn);border-color:rgba(255,181,71,.4)}
+.summary{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:28px;align-items:start}
+@media(max-width:860px){.summary{grid-template-columns:minmax(0,1fr)}}
+.badges{display:flex;flex-wrap:wrap;gap:10px}
+.bdg{display:flex;gap:10px;align-items:center;padding:8px 12px 8px 8px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line2);font-size:14px}
+.bdg .hx{width:36px;height:36px;display:grid;place-items:center;color:#04130b;background:var(--bc,var(--g));clip-path:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%)}
+.bdg .hx svg{width:18px;height:18px}
+.bdg b{display:block;font-family:var(--hf)}
+/* overlay */
+#ov{position:fixed;inset:0;z-index:60;display:none;place-items:center;background:rgba(3,6,16,.78);backdrop-filter:blur(6px);text-align:center;padding:20px}
+#ov.show{display:grid}
+#ov .u{font:700 clamp(30px,6vw,60px) var(--hf);color:var(--g);text-shadow:0 0 30px var(--g);animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+#ov .s{font:600 clamp(16px,2.4vw,22px) var(--hf);color:var(--ink);margin-top:12px;animation:fade .6s .15s both}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}}
+.done{text-align:center;display:grid;gap:12px;justify-items:center;margin-bottom:28px;position:relative;overflow-x:clip}
+.done h1{font-size:clamp(40px,8vw,84px);color:var(--g);text-shadow:0 0 40px rgba(57,255,136,.6);animation:pop .7s cubic-bezier(.2,1.6,.4,1)}
+.burst{position:absolute;top:40px;left:50%;width:10px;height:10px;pointer-events:none}
+.burst i{position:absolute;width:8px;height:8px;border-radius:2px;animation:fly 1.4s ease-out forwards}
+@keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(320deg);opacity:0}}
+.modal{position:fixed;inset:0;z-index:70;display:none;place-items:center;background:rgba(3,6,16,.8);padding:16px}
+.modal.show{display:grid}
+.modal .panel{max-width:640px;width:100%;max-height:86vh;overflow:auto;background:#0d1538}
+.alert{padding:14px 16px;border-radius:12px;border:1px solid rgba(255,93,115,.45);background:rgba(255,93,115,.1);color:#ffc3cc}
+.okmsg{padding:14px 16px;border-radius:12px;border:1px solid rgba(57,255,136,.45);background:rgba(57,255,136,.08);color:#c9ffe0}
+/* admin */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0 22px;border-bottom:1px solid var(--line);padding-bottom:10px}
+.tab{min-height:42px;padding:0 16px;border-radius:10px;border:1px solid transparent;background:none;color:var(--mute);font:600 15px var(--hf);cursor:pointer}
+.tab[aria-selected=true]{color:var(--ink);background:rgba(34,211,238,.1);border-color:rgba(34,211,238,.4)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:12px;margin-bottom:16px}
+.kpi{padding:16px;border-radius:var(--r);background:var(--panel);border:1px solid var(--line)}
+.kpi .n{font:700 clamp(28px,4vw,40px) var(--hf);color:var(--g);line-height:1}
+.kpi .l{color:var(--mute);font-size:13px;margin-top:6px}
+.dash{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media(max-width:860px){.dash{grid-template-columns:minmax(0,1fr)}}
+.dash h2{font-size:19px;margin-bottom:14px}
+.bars{display:grid;gap:9px}
+.brow{display:grid;grid-template-columns:minmax(0,1fr) 72px;gap:4px 10px;align-items:center;font-size:14px}
+.brow .bt{grid-column:1/-1;display:flex;justify-content:space-between;gap:8px}
+.brow .track{height:10px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden;grid-column:1;grid-row:2}
+.brow .fill{height:100%;border-radius:3px;background:var(--bc,var(--c))}
+.brow .v{text-align:end;font-variant-numeric:tabular-nums;font-weight:600;grid-column:2;grid-row:2;white-space:nowrap;font-size:13px}
+.brow .bt span:last-child{display:none}
+.carto{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.tile{aspect-ratio:1.15;border-radius:8px;padding:6px;display:flex;flex-direction:column;justify-content:space-between;font-size:11px;line-height:1.15;border:1px solid var(--line);background:rgba(255,255,255,.03)}
+.tile b{font:700 18px var(--hf)}
+.tile.e{visibility:hidden}
+.feed{display:grid;gap:10px;max-height:420px;overflow:auto;padding-inline-end:4px}
+.feed blockquote{margin:0;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.03);border-inline-start:3px solid var(--bc,var(--c))}
+.feed cite{display:block;font-style:normal;color:var(--mute);font-size:12px;margin-top:6px}
+.toolbar{display:grid;grid-template-columns:minmax(0,2fr) repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}
+@media(max-width:860px){.toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}.toolbar>:first-child{grid-column:1/-1}}
+.acts{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:start;color:var(--mute);font-weight:600;font-size:12px;padding:10px 8px;border-bottom:1px solid var(--line2);white-space:nowrap}
+td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td .ib{min-height:36px}
+.dup{color:var(--warn);font-size:12px;font-weight:600}
+.empty{padding:30px;text-align:center;color:var(--mute)}
+.ci{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;max-width:640px}
+.dl{display:grid;grid-template-columns:minmax(0,170px) minmax(0,1fr);gap:8px 16px;font-size:14px}
+.dl dt{color:var(--mute)}.dl dd{margin:0;overflow-wrap:anywhere}
+@media(max-width:600px){.hero{grid-template-columns:minmax(0,1fr);min-height:0}.orbit{max-width:300px;order:-1;margin:-6px auto -10px}.btn.big{width:100%}table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:7.5em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:7em;margin-inline-start:-7.5em;color:var(--mute);font-size:12px}.stack td:empty{display:none}.dl{grid-template-columns:minmax(0,1fr)}.dl dd{margin-bottom:6px}}
+.rm *,.rm *::before,.rm *::after{animation:none!important;transition:none!important}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+footer{max-width:1240px;margin:0 auto;padding:20px max(4vw,14px) 40px;color:var(--mute);font-size:13px;display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;border-top:1px solid var(--line)}
+</style>
+<script>window.SGQ_SUPABASE={url:'https://nmygapaqxswcvjnjppdz.supabase.co',key:'sb_publishable_N21Uek2OyME6VwRrJB8aWw_W-3sZxx8'}</script>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="flag" aria-hidden="true"></div>
+<header class="top">
+  <div class="bar">
+    <button class="logo" data-a="home" aria-label="Senegal Gaming Quest — accueil">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><polygon points="16,2 29,9.5 29,22.5 16,30 3,22.5 3,9.5" fill="none" stroke="#22d3ee" stroke-width="2"/><polygon points="16,9 17.9,14.2 23.4,14.4 19.1,17.8 20.6,23.1 16,20 11.4,23.1 12.9,17.8 8.6,14.4 14.1,14.2" fill="#39ff88"/></svg>
+      <span>SENEGAL GAMING QUEST</span>
+    </button>
+    <div class="tog">
+      <button class="ib" id="bLang" data-a="lang" aria-label="Language / Langue">EN</button>
+      <button class="ib" id="bSnd" data-a="snd" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg><span id="lSnd">Son</span></button>
+      <button class="ib" id="bRm" data-a="rm" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 9v6M15 9v6"/></svg><span id="lRm">Animations réduites</span></button>
+      <button class="ib" id="bAdm" data-a="admin" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 20h18M6 16V10M11 16V6M16 16v-4M21 16V8"/></svg><span id="lAdm">Organisateurs</span></button>
+    </div>
+  </div>
+</header>
+<main id="app" tabindex="-1"></main>
+<footer><span id="fSig">Choose Your Role. Join the Quest. Shape Senegal's Gaming Future.</span><span><button class="linkb" data-a="privacy" id="fPriv">Politique de confidentialité</button></span></footer>
+<div id="ov" role="status" aria-live="assertive"><div><div class="u" id="ovU"></div><div class="s" id="ovS"></div></div></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle"><div class="panel" id="mBody"></div></div>
+<div class="sr" aria-live="polite" id="live"></div>
+<script>
+{
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+const O=(id,fr,en)=>({id,fr,en});
+const ico=(p,sw=1.8)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* ---------- data ---------- */
+const ROLES=[
+ {id:'developer',name:'The Developer',fr:'Développeur de jeux vidéo',en:'Video game developer',dfr:'Tu codes les mondes, les mécaniques et les moteurs de jeu.',den:'You code worlds, mechanics and game engines.',c:'#39ff88',b:['Code Warrior','Code Warrior'],p:'<path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/>'},
+ {id:'creator',name:'The Creator',fr:'Artiste, designer, streamer ou créateur de contenu',en:'Artist, designer, streamer or content creator',dfr:'Tu donnes une âme, une image et une voix aux jeux.',den:'You give games their soul, look and voice.',c:'#f472b6',b:['Pixel Artisan','Pixel Artisan'],p:'<path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"/><path d="M3 21l5-5"/>'},
+ {id:'progamer',name:'The Pro Gamer',fr:'Joueur compétitif ou acteur de l’e-sport',en:'Competitive player or esports actor',dfr:'Tu vis la compétition et fais vibrer l’arène.',den:'You live for competition and light up the arena.',c:'#22d3ee',b:['Arena Champion','Arena Champion'],p:'<path d="M6 8h12a4 4 0 0 1 4 4v1.5a3 3 0 0 1-5.4 1.8L15 13.5H9l-1.6 1.8A3 3 0 0 1 2 13.5V12a4 4 0 0 1 4-4z"/><path d="M7 10.5v3M5.5 12h3"/><path d="M16 11h.01M18 13h.01"/>'},
+ {id:'studio',name:'The Studio Builder',fr:'Studio, entrepreneur ou startup gaming',en:'Studio, entrepreneur or gaming startup',dfr:'Tu bâtis des studios et des jeux qui s’exportent.',den:'You build studios and games that travel.',c:'#a78bfa',b:['World Builder','World Builder'],p:'<path d="M3 21V10l6-4v15M9 21V4l12 6v11M3 21h18M13 12h4M13 16h4"/>'},
+ {id:'investor',name:'The Investor',fr:'Investisseur, financeur ou partenaire',en:'Investor, funder or partner',dfr:'Tu donnes aux projets le carburant pour passer au niveau suivant.',den:'You fuel projects to reach the next level.',c:'#fdef42',b:['Power-Up Patron','Power-Up Patron'],p:'<path d="M3 20h18M5 16l5-5 4 3 6-7"/><path d="M15 7h5v5"/>'},
+ {id:'enabler',name:'The Enabler',fr:'Institution publique, régulateur, incubateur ou structure d’accompagnement',en:'Public institution, regulator, incubator or support organisation',dfr:'Tu poses les règles du jeu et ouvres les portes.',den:'You set the rules of the game and open doors.',c:'#34d399',b:['Level Architect','Level Architect'],p:'<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 21h18"/>'},
+ {id:'mentor',name:'The Mentor',fr:'Université, formateur, chercheur ou expert',en:'University, trainer, researcher or expert',dfr:'Tu transmets le savoir et formes la prochaine génération.',den:'You pass on knowledge and train the next generation.',c:'#fb923c',b:['Guild Sage','Guild Sage'],p:'<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c2 2 10 2 12 0v-5M22 9v6"/>'},
+ {id:'explorer',name:'The Explorer',fr:'Passionné, étudiant ou nouvel entrant',en:'Enthusiast, student or newcomer',dfr:'Tu découvres l’écosystème et cherches ta voie.',den:'You are discovering the ecosystem and finding your path.',c:'#60a5fa',b:['Pathfinder','Pathfinder'],p:'<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>'}
+];
+const RM=Object.fromEntries(ROLES.map(r=>[r.id,r]));
+const REGIONS=['Dakar','Thiès','Diourbel','Saint-Louis','Louga','Matam','Kaolack','Fatick','Kaffrine','Tambacounda','Kédougou','Kolda','Sédhiou','Ziguinchor'];
+const CARTO=[[null,null,'Saint-Louis',null,'Matam'],['Dakar','Thiès','Louga',null,null],[null,'Fatick','Diourbel','Kaffrine','Tambacounda'],[null,null,'Kaolack',null,null],['Ziguinchor','Sédhiou','Kolda',null,'Kédougou']];
+const YEARS=[O('0','Moins d’un an','Less than a year'),O('1','1 à 3 ans','1–3 years'),O('3','3 à 5 ans','3–5 years'),O('5','5 à 10 ans','5–10 years'),O('10','Plus de 10 ans','10+ years')];
+const CODES=['+221','+33','+225','+223','+224','+222','+220','+212','+1','+44','+49','+234','+233'];
+const THEMES=[O('dev','Développement et production de jeux vidéo','Game development and production'),O('esport','E-sport et structuration des compétitions','Esports and competition structuring'),O('skills','Formation, compétences et employabilité','Training, skills and employability'),O('fund','Financement des studios et startups gaming','Funding gaming studios and startups'),O('content','Création de contenus, animation et storytelling','Content creation, animation and storytelling'),O('infra','Infrastructures numériques, plateformes et distribution','Digital infrastructure, platforms and distribution'),O('ai','Intelligence artificielle appliquée au gaming','AI applied to gaming'),O('policy','Cadre réglementaire, propriété intellectuelle et politiques publiques','Regulation, IP and public policy'),O('market','Monétisation et accès aux marchés internationaux','Monetisation and international markets'),O('incl','Inclusion, jeunesse et participation des femmes','Inclusion, youth and women’s participation')];
+const TM=Object.fromEntries(THEMES.map(t=>[t.id,t]));
+const CHAL=[O('fund','Accès au financement','Access to funding'),O('skills','Manque de formation et de compétences','Lack of training and skills'),O('infra','Connectivité, équipements, coût du matériel','Connectivity, equipment, hardware costs'),O('pay','Monétisation et moyens de paiement','Monetisation and payment methods'),O('market','Accès aux marchés et à la distribution','Access to markets and distribution'),O('visib','Manque de visibilité et de reconnaissance','Lack of visibility and recognition'),O('policy','Cadre réglementaire peu clair','Unclear regulatory framework'),O('net','Isolement, manque de réseau','Isolation, lack of network'),O('talent','Recrutement de talents','Hiring talent'),O('other','Autre','Other')];
+const EXPE=[O('net','Rencontrer et réseauter','Meet and network'),O('part','Trouver des partenaires','Find partners'),O('fund','Accéder à des financements','Access funding'),O('learn','Se former, apprendre','Learn and upskill'),O('visib','Gagner en visibilité','Gain visibility'),O('policy','Comprendre les politiques publiques','Understand public policy'),O('talent','Recruter des talents','Recruit talent'),O('strat','Contribuer à la stratégie nationale','Contribute to the national strategy')];
+const SPEC={
+ developer:[{k:'platforms',fr:'Plateformes ciblées',en:'Target platforms',o:[O('pc','PC','PC'),O('mobile','Mobile','Mobile'),O('console','Console','Console'),O('web','Web','Web'),O('xr','VR / AR','VR / AR')]},{k:'tech',fr:'Technologies utilisées',en:'Technologies used',o:[O('unity','Unity','Unity'),O('unreal','Unreal','Unreal'),O('godot','Godot','Godot'),O('gm','GameMaker','GameMaker'),O('js','Web / JS','Web / JS'),O('other','Autre','Other')]}],
+ creator:[{k:'craft',fr:'Ton domaine créatif',en:'Your creative field',o:[O('2d','Illustration / 2D','Illustration / 2D'),O('3d','3D / animation','3D / animation'),O('gd','Game design','Game design'),O('sound','Son / musique','Sound / music'),O('stream','Streaming','Streaming'),O('video','Vidéo / contenu','Video / content')]},{k:'chan',fr:'Tes plateformes de diffusion',en:'Your channels',o:[O('twitch','Twitch','Twitch'),O('yt','YouTube','YouTube'),O('tiktok','TikTok','TikTok'),O('ig','Instagram','Instagram'),O('none','Aucune','None')]}],
+ progamer:[{k:'disc',fr:'Disciplines e-sport pratiquées',en:'Esports titles played',o:[O('fc','EA FC / eFootball','EA FC / eFootball'),O('ff','Free Fire','Free Fire'),O('codm','Call of Duty Mobile','Call of Duty Mobile'),O('pubg','PUBG Mobile','PUBG Mobile'),O('lol','League of Legends','League of Legends'),O('fight','Jeux de combat','Fighting games'),O('other','Autre','Other')]},{k:'level',max:1,fr:'Ton niveau',en:'Your level',o:[O('am','Amateur','Amateur'),O('semi','Semi-pro','Semi-pro'),O('pro','Pro','Pro'),O('org','Organisateur / coach','Organiser / coach')]}],
+ studio:[{k:'games',text:1,fr:'Jeux développés ou en cours',en:'Games released or in progress',ph:'Ex. : Kocc Barma Run (mobile, 2025)'},{k:'stage',max:1,fr:'Stade de maturité',en:'Maturity stage',o:[O('idea','Idée','Idea'),O('proto','Prototype','Prototype'),O('pub','Jeu publié','Published game'),O('rev','Premiers revenus','First revenue'),O('scale','Croissance','Scaling')]}],
+ investor:[{k:'focus',fr:'Principaux domaines d’intérêt',en:'Main areas of interest',o:[O('studio','Studios','Studios'),O('esport','E-sport','Esports'),O('edu','Formation / edtech','Training / edtech'),O('infra','Infrastructures','Infrastructure'),O('media','Médias / contenus','Media / content'),O('ai','IA','AI')]},{k:'ticket',max:1,fr:'Type de soutien',en:'Type of support',o:[O('grant','Subvention','Grant'),O('seed','Amorçage','Seed'),O('series','Série A et plus','Series A+'),O('spons','Partenariat / sponsoring','Partnership / sponsorship')]}],
+ enabler:[{k:'progs',text:1,fr:'Initiatives ou programmes accompagnés',en:'Initiatives or programmes supported',ph:'Ex. : programme d’incubation, appel à projets…'},{k:'kind',max:1,fr:'Type de structure',en:'Type of organisation',o:[O('gov','Ministère / agence','Ministry / agency'),O('reg','Régulateur','Regulator'),O('inc','Incubateur / accélérateur','Incubator / accelerator'),O('local','Collectivité','Local authority'),O('intl','Organisation internationale','International organisation')]}],
+ mentor:[{k:'field',fr:'Domaines d’expertise',en:'Areas of expertise',o:[O('prog','Programmation','Programming'),O('art','Art / design','Art / design'),O('biz','Business / marketing','Business / marketing'),O('law','Droit / PI','Law / IP'),O('res','Recherche','Research'),O('ped','Pédagogie','Teaching')]},{k:'inst',max:1,fr:'Type d’institution',en:'Type of institution',o:[O('uni','Université','University'),O('school','École / centre de formation','School / training centre'),O('lab','Laboratoire de recherche','Research lab'),O('ind','Expert indépendant','Independent expert')]}],
+ explorer:[{k:'status',max:1,fr:'Ta situation',en:'Your situation',o:[O('stud','Étudiant','Student'),O('fan','Passionné','Enthusiast'),O('switch','En reconversion','Career switch'),O('edu','Parent / éducateur','Parent / educator')]},{k:'want',fr:'Ce qui t’attire',en:'What draws you in',o:[O('code','Coder des jeux','Coding games'),O('create','Créer','Creating'),O('comp','La compétition','Competing'),O('biz','Entreprendre','Starting a business'),O('disc','Découvrir','Exploring')]}]
+};
+const CFG_DEF={title:'Atelier national de l’écosystème gaming du Sénégal',date:'Date à annoncer',venue:'Dakar, Sénégal',capacity:300,open:true,qr:true,emailSvc:false,controller:'le comité d’organisation de l’Atelier',privacyEmail:'',obj:'Cartographier les acteurs, partager les besoins, bâtir ensemble une feuille de route nationale du gaming.'};
+
+/* ---------- i18n ---------- */
+const T={fr:{
+ snd:'Son',rm:'Animations réduites',adm:'Organisateurs',priv:'Politique de confidentialité',
+ kick:'Inscription officielle',lead:'Le futur du gaming sénégalais se construit avec vous.',sub:'Développeurs, studios, gamers, créateurs, investisseurs, institutions : chaque acteur a un rôle à jouer.',
+ objT:'Objectifs de l’atelier',o1:'Cartographier les acteurs de l’écosystème gaming national.',o2:'Faire émerger les besoins, obstacles et opportunités de collaboration.',o3:'Construire ensemble les priorités d’une feuille de route nationale.',
+ start:'START THE QUEST — S’INSCRIRE',time:'3 minutes pour rejoindre la mission',mypass:'VOIR MON GAMING PASS',closed:'Les inscriptions sont actuellement fermées.',
+ nodb:'Le service d’inscription est momentanément injoignable. Tes réponses sont conservées sur cet appareil ; réessaie dans un instant.',find:'Retrouver mon Gaming Pass',findS:'Saisis l’e-mail utilisé et l’identifiant reçu (SGQ-XXXXXX).',findBtn:'Afficher mon pass',findNo:'Aucun pass ne correspond à cet e-mail et cet identifiant.',eRate:'Trop de tentatives. Patiente une minute puis réessaie.',sent:'Une confirmation vient de t’être envoyée par e-mail.',
+ kiosk:'Mode accueil organisateur : chaque inscription validée ici crée un nouveau participant.',
+ lvl:'Level',m:'MISSION',
+ m1t:'CHOOSE YOUR PLAYER',m1h:'Quel est ton rôle dans l’écosystème ?',m1s:'Choisis le profil qui te ressemble le plus. Tu pourras préciser ensuite.',
+ m2t:'BUILD YOUR PROFILE',m2h:'Créons ta carte de joueur',m3t:'CHOOSE YOUR QUEST',m3h:'Quelles missions veux-tu accomplir ?',m4t:'UNLOCK YOUR PASS',m4h:'Dernière étape avant de rejoindre la partie !',
+ next:'Mission suivante',back:'Retour',sel:'PLAYER SELECTED',selS:'Mission suivante débloquée !',built:'PROFILE BUILT',builtS:'Ta carte de joueur est prête — +250 XP',chosen:'QUEST LOCKED',chosenS:'Dernière étape débloquée !',
+ name:'Prénom et nom',email:'Adresse e-mail',phone:'Téléphone',org:'Organisation, entreprise ou collectif',func:'Fonction ou activité principale',region:'Région',intl:'International / diaspora',country:'Pays',web:'Site web, portfolio ou LinkedIn',years:'Années d’expérience dans le gaming',choose:'Choisir…',optional:'facultatif',spec:'Questions bonus pour ton profil',
+ eName:'Indique ton prénom et ton nom.',eEmail:'Adresse e-mail invalide.',ePhone:'Numéro invalide (au Sénégal : 9 chiffres, ex. 77 123 45 67).',eFunc:'Indique ta fonction ou ton activité.',eRegion:'Choisis ta région.',eCountry:'Indique ton pays.',eWeb:'Adresse web invalide.',
+ thT:'Thématiques prioritaires',thS:'Choisis jusqu’à 3 quêtes.',max3:'3 quêtes maximum : désélectionne-en une pour changer.',eThemes:'Choisis au moins une thématique.',
+ chT:'Quel est aujourd’hui le principal défi que tu rencontres dans l’écosystème gaming sénégalais ?',chS:'Plusieurs choix possibles.',chO:'Précise ton défi',eChal:'Choisis au moins un défi.',
+ coT:'Quelle contribution pourrais-tu apporter à son développement ?',coP:'Ex. : former des jeunes développeurs, mentorer un studio, organiser un tournoi…',
+ exT:'Qu’attends-tu en priorité de cet atelier ?',eExp:'Choisis au moins une attente.',
+ recap:'Ta carte de joueur',edit:'Modifier',consent:'J’accepte la politique de confidentialité et le traitement de mes données pour mon inscription.',consentR:'(obligatoire)',readPol:'Lire la politique',eConsent:'Tu dois accepter la politique de confidentialité pour t’inscrire.',
+ news:'Je souhaite recevoir des informations sur les prochaines initiatives gaming au Sénégal.',complete:'COMPLETE QUEST — VALIDER MON INSCRIPTION',saving:'Enregistrement en cours…',
+ symb:'Les badges et l’XP sont symboliques : ils n’influencent ni l’admission ni l’accès à l’événement.',
+ done:'QUEST COMPLETED!',welcome:'Bienvenue dans la communauté qui construit le futur du gaming au Sénégal.',dl:'Télécharger mon pass',dlNo:'Le téléchargement a échoué. Fais une capture d’écran de ton pass.',
+ mailOn:'Une confirmation par e-mail te sera envoyée par l’équipe organisatrice.',mailOff:'L’envoi du pass par e-mail sera activé dès que le service de messagerie sera configuré. En attendant, télécharge ton pass.',
+ badges:'Badges débloqués',bPion:'Pionnier',bPionD:'Parmi les 100 premiers inscrits',bQuest:'Quest Master',bQuestD:'Les 4 missions accomplies',bVoice:'Voice of the Ecosystem',bVoiceD:'Contribution partagée',bRoleD:'Badge de profil',
+ conf:'CONFIRMÉ',wait:'LISTE D’ATTENTE',waitMsg:'La capacité maximale est atteinte : tu es inscrit(e) sur liste d’attente. Les organisateurs te recontacteront.',
+ passT:'GAMING PASS',pidL:'Identifiant',showQr:'À présenter à l’accueil',newReg:'Nouvelle inscription',home:'Accueil',
+ eDup:'Cette adresse e-mail est déjà inscrite. Si c’est une erreur, contacte les organisateurs.',eAlready:'Tu es déjà inscrit(e) : voici ton Gaming Pass.',eNet:'Connexion perdue : ton inscription n’a pas été enregistrée. Tes réponses sont conservées sur cet appareil — réessaie.',eRo:'Ton accès ne permet pas d’enregistrer une inscription. Contacte les organisateurs.',eQuota:'La base d’inscriptions est pleine. Contacte les organisateurs.',eGen:'L’inscription n’a pas pu être enregistrée. Réessaie dans un instant.',retry:'Réessayer',eClosed:'Les inscriptions sont fermées.',
+ resume:'Ta progression a été restaurée.',org0:'—',close:'Fermer',
+ polT:'Politique de confidentialité',
+ noAdmin:'Espace réservé aux organisateurs.'
+},en:{
+ snd:'Sound',rm:'Reduced motion',adm:'Organisers',priv:'Privacy policy',
+ kick:'Official registration',lead:'The future of Senegalese gaming is built with you.',sub:'Developers, studios, gamers, creators, investors, institutions: every player has a role.',
+ objT:'Workshop goals',o1:'Map the players of the national gaming ecosystem.',o2:'Surface needs, obstacles and collaboration opportunities.',o3:'Co-build the priorities of a national roadmap.',
+ start:'START THE QUEST — REGISTER',time:'3 minutes to join the mission',mypass:'VIEW MY GAMING PASS',closed:'Registration is currently closed.',
+ nodb:'The registration service is temporarily unreachable. Your answers are kept on this device; try again in a moment.',find:'Find my Gaming Pass',findS:'Enter the email you used and the ID you received (SGQ-XXXXXX).',findBtn:'Show my pass',findNo:'No pass matches this email and ID.',eRate:'Too many attempts. Wait a minute and try again.',sent:'A confirmation has just been emailed to you.',
+ kiosk:'Organiser desk mode: each registration completed here creates a new participant.',
+ lvl:'Level',m:'MISSION',
+ m1t:'CHOOSE YOUR PLAYER',m1h:'What is your role in the ecosystem?',m1s:'Pick the profile closest to you. You can add detail next.',
+ m2t:'BUILD YOUR PROFILE',m2h:'Let’s build your player card',m3t:'CHOOSE YOUR QUEST',m3h:'Which missions do you want to take on?',m4t:'UNLOCK YOUR PASS',m4h:'Last step before you join the game!',
+ next:'Next mission',back:'Back',sel:'PLAYER SELECTED',selS:'Next mission unlocked!',built:'PROFILE BUILT',builtS:'Your player card is ready — +250 XP',chosen:'QUEST LOCKED',chosenS:'Final step unlocked!',
+ name:'First and last name',email:'Email address',phone:'Phone',org:'Organisation, company or collective',func:'Job title or main activity',region:'Region',intl:'International / diaspora',country:'Country',web:'Website, portfolio or LinkedIn',years:'Years of experience in gaming',choose:'Choose…',optional:'optional',spec:'Bonus questions for your profile',
+ eName:'Enter your first and last name.',eEmail:'Invalid email address.',ePhone:'Invalid number (Senegal: 9 digits, e.g. 77 123 45 67).',eFunc:'Enter your job title or activity.',eRegion:'Choose your region.',eCountry:'Enter your country.',eWeb:'Invalid web address.',
+ thT:'Priority topics',thS:'Pick up to 3 quests.',max3:'3 quests max: deselect one to change.',eThemes:'Pick at least one topic.',
+ chT:'What is the main challenge you face today in Senegal’s gaming ecosystem?',chS:'Several answers allowed.',chO:'Describe your challenge',eChal:'Pick at least one challenge.',
+ coT:'What contribution could you make to its development?',coP:'E.g. train young developers, mentor a studio, run a tournament…',
+ exT:'What do you expect most from this workshop?',eExp:'Pick at least one expectation.',
+ recap:'Your player card',edit:'Edit',consent:'I accept the privacy policy and the processing of my data for my registration.',consentR:'(required)',readPol:'Read the policy',eConsent:'You must accept the privacy policy to register.',
+ news:'I’d like to hear about upcoming gaming initiatives in Senegal.',complete:'COMPLETE QUEST — CONFIRM MY REGISTRATION',saving:'Saving…',
+ symb:'Badges and XP are symbolic: they don’t affect admission or access to the event.',
+ done:'QUEST COMPLETED!',welcome:'Welcome to the community building the future of gaming in Senegal.',dl:'Download my pass',dlNo:'Download failed. Take a screenshot of your pass.',
+ mailOn:'A confirmation email will be sent to you by the organising team.',mailOff:'Email delivery of your pass will be switched on once the mail service is configured. Meanwhile, download your pass.',
+ badges:'Badges unlocked',bPion:'Pioneer',bPionD:'Among the first 100 registrants',bQuest:'Quest Master',bQuestD:'All 4 missions completed',bVoice:'Voice of the Ecosystem',bVoiceD:'Contribution shared',bRoleD:'Profile badge',
+ conf:'CONFIRMED',wait:'WAITLIST',waitMsg:'Maximum capacity has been reached: you are on the waitlist. The organisers will get back to you.',
+ passT:'GAMING PASS',pidL:'Pass ID',showQr:'Show at the welcome desk',newReg:'New registration',home:'Home',
+ eDup:'This email is already registered. If this is a mistake, contact the organisers.',eAlready:'You’re already registered: here is your Gaming Pass.',eNet:'Connection lost: your registration was not saved. Your answers are kept on this device — try again.',eRo:'Your access doesn’t allow saving a registration. Contact the organisers.',eQuota:'The registration database is full. Contact the organisers.',eGen:'Your registration couldn’t be saved. Try again in a moment.',retry:'Try again',eClosed:'Registration is closed.',
+ resume:'Your progress has been restored.',org0:'—',close:'Close',
+ polT:'Privacy policy',
+ noAdmin:'Organisers only.'
+}};
+
+/* ---------- state ---------- */
+let L=LS.get('sgq.lang','fr');
+const t=k=>(T[L]&&T[L][k])||T.fr[k]||k;
+const tx=o=>o?(o[L]||o.fr):'';
+const blank=()=>({view:'home',role:'',f:{name:'',email:'',code:'+221',phone:'',org:'',func:'',region:'',country:'',web:'',years:''},spec:{},themes:[],chal:[],chalO:'',contrib:'',exp:[],consent:false,news:false});
+let S=Object.assign(blank(),LS.get('sgq.draft',{}));
+S.view=['m1','m2','m3','m4'].includes(S.view)?S.view:'home';
+let restored=S.view!=='home';
+let PREF=LS.get('sgq.pref',{snd:false,rm:matchMedia('(prefers-reduced-motion: reduce)').matches});
+let CFG={...CFG_DEF};
+const SB=window.SGQ_SUPABASE||{url:'',key:''};const API=(SB.url||'').replace(/\/$/,'');
+let TOK=LS.get('sgq.tok',''),RTOK=LS.get('sgq.rtok',''),ORG=LS.get('sgq.org',null),ADMIN=!!TOK,MINE=LS.get('sgq.pass',null),OFFLINE=false,DBREADY=false,saving=false,lastErr='',errs={},CFGID='1';
+const SNAKE={passId:'pass_id',phoneCode:'phone_code',chalO:'chal_o',consentAt:'consent_at',consentV:'consent_v',checkedInAt:'checked_in_at',emailSvc:'email_svc',privacyEmail:'privacy_email'};
+const CAMEL=Object.fromEntries(Object.entries(SNAKE).map(([a,b])=>[b,a]));
+const fromDb=o=>{const r={};for(const k in o)r[CAMEL[k]||k]=o[k];return r};const toDb=o=>{const r={};for(const k in o)r[SNAKE[k]||k]=o[k];return r};
+async function api(path,opt={}){const h={'Content-Type':'application/json',apikey:SB.key};if(TOK&&!opt.anon)h.Authorization='Bearer '+TOK;if(opt.prefer)h.Prefer=opt.prefer;let r;try{r=await fetch(API+path,{method:opt.method||'GET',headers:h,body:opt.body?JSON.stringify(opt.body):undefined,cache:'no-store'})}catch(e){throw {code:'network'}}let j=null;const txt=await r.text();try{j=txt?JSON.parse(txt):null}catch(e){}
+ if(!r.ok){const c=(j&&(j.message||j.error_code||j.error))||('http'+r.status);if(r.status===401&&TOK&&!opt.keep){if(await refreshTok())return api(path,{...opt,keep:true});logout(false)}throw {code:c,status:r.status,msg:j&&(j.message||j.error_description||j.msg)}}return j}
+async function refreshTok(){if(!RTOK)return false;try{const j=await api('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:RTOK},anon:true,keep:true});TOK=j.access_token;RTOK=j.refresh_token;LS.set('sgq.tok',TOK);LS.set('sgq.rtok',RTOK);return true}catch(e){return false}}
+async function retryNet(fn){try{return await fn()}catch(e){if(e&&(e.code==='network'||e.status>=500)){await sleep(900+Math.random()*900);return await fn()}throw e}}
+function loadScript(srcs){return new Promise((res,rej)=>{const tryN=i=>{if(i>=srcs.length)return rej();const s=document.createElement('script');s.src=srcs[i];s.onload=()=>res();s.onerror=()=>{s.remove();tryN(i+1)};document.head.appendChild(s)};tryN(0)})}
+function saveBlob(name,blob){const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000)}
+function logout(rerender=true){TOK='';RTOK='';ORG=null;ADMIN=false;LS.del('sgq.tok');LS.del('sgq.rtok');LS.del('sgq.org');clearInterval(window.__poll);REGS=new Map();CHK=new Map();if(rerender)render()}
+const saveDraft=()=>{const {view,...rest}=S;LS.set('sgq.draft',{...rest,view});};
+
+/* ---------- sound ---------- */
+let ac=null;
+function blip(f=660,d=.07,type='square'){if(!PREF.snd)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=f;g.gain.value=.05;g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d);o.connect(g).connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+const fanfare=()=>{[523,659,784,1047].forEach((f,i)=>setTimeout(()=>blip(f,.12,'triangle'),i*90))};
+
+/* ---------- particles (light) ---------- */
+const cv=$('#fx'),cx=cv.getContext('2d');let P=[],raf=0;
+function fxSize(){cv.width=innerWidth;cv.height=innerHeight;P=Array.from({length:Math.min(36,Math.round(innerWidth/30))},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.6+.4,vy:-(Math.random()*.25+.05),c:['#39ff88','#22d3ee','#a78bfa'][Math.floor(Math.random()*3)]}))}
+function fxLoop(){cx.clearRect(0,0,cv.width,cv.height);for(const p of P){p.y+=p.vy;if(p.y<-5)p.y=cv.height+5;cx.globalAlpha=.55;cx.fillStyle=p.c;cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fill()}raf=requestAnimationFrame(fxLoop)}
+function fxApply(){cancelAnimationFrame(raf);cx.clearRect(0,0,cv.width,cv.height);if(!PREF.rm&&!document.hidden)fxLoop()}
+addEventListener('resize',()=>{fxSize();fxApply()});document.addEventListener('visibilitychange',fxApply);
+
+/* ---------- chrome ---------- */
+function chrome(){document.documentElement.lang=L;document.documentElement.classList.toggle('rm',PREF.rm);$('#bLang').textContent=L==='fr'?'EN':'FR';$('#bLang').setAttribute('aria-label',L==='fr'?'Switch to English':'Passer en français');$('#lSnd').textContent=t('snd');$('#bSnd').setAttribute('aria-pressed',PREF.snd);$('#lRm').textContent=t('rm');$('#bRm').setAttribute('aria-pressed',PREF.rm);$('#lAdm').textContent=t('adm');$('#bAdm').hidden=false;$('#fPriv').textContent=t('priv')}
+const live=m=>{$('#live').textContent='';setTimeout(()=>$('#live').textContent=m,30)};
+
+/* ---------- views ---------- */
+const STEPS=['m1','m2','m3','m4'];
+function hud(n){const lv=Math.min(n,4),pct=(n-1)*25;return `<div class="hud" style="width:100%" aria-label="${t('lvl')} ${lv}/4 · ${pct}%"><div class="hudrow"><span>${t('lvl')} <b>${lv}/4</b></span><span><b>${pct}%</b> · ${n*250-250} XP</span></div><div class="segs">${[1,2,3,4].map(i=>`<div class="seg ${i<n?'on':''} ${i===n?'cur':''}"></div>`).join('')}</div></div>`}
+function mhead(n,tag,h,s){return hud(n)+`<div class="mhead"><span class="mtag">${t('m')} 0${n} — ${t(tag)}</span><h1 tabindex="-1" id="vh">${h}</h1>${s?`<p class="muted" style="margin:0">${s}</p>`:''}</div>`}
+function starPts(cx0,cy0,R,r){let s='';for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r:R;s+=`${(cx0+rr*Math.cos(a)).toFixed(1)},${(cy0+rr*Math.sin(a)).toFixed(1)} `}return s}
+function orbit(){const nodes=ROLES.map((r,i)=>{const a=-Math.PI/2+i*Math.PI/4,x=200+150*Math.cos(a),y=200+150*Math.sin(a);return `<g class="node" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><polygon points="0,-26 22.5,-13 22.5,13 0,26 -22.5,13 -22.5,-13" fill="#0d1640" stroke="${r.c}" stroke-width="1.5"/><g transform="translate(-12 -12)" style="color:${r.c}">${ico(r.p).replace('<svg ','<svg width="24" height="24" ')}</g></g>`}).join('');
+ return `<svg viewBox="0 0 400 400" role="img" aria-label="Huit profils d’acteurs autour de l’étoile du Sénégal"><defs><radialGradient id="core"><stop offset="0" stop-color="#39ff88" stop-opacity=".45"/><stop offset="1" stop-color="#39ff88" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="120" fill="url(#core)"/><g class="spin"><circle cx="200" cy="200" r="150" fill="none" stroke="#22d3ee" stroke-opacity=".5" stroke-dasharray="2 10"/><circle cx="200" cy="200" r="182" fill="none" stroke="#a78bfa" stroke-opacity=".35" stroke-dasharray="40 14 4 14"/></g><g class="spin r"><circle cx="200" cy="200" r="95" fill="none" stroke="#39ff88" stroke-opacity=".5" stroke-dasharray="70 20"/></g><circle cx="200" cy="200" r="70" fill="#0a1236" stroke="#39ff88" stroke-width="2"/><path d="M155 238 A70 70 0 0 0 245 238" fill="none" stroke="#fdef42" stroke-width="3" opacity=".8"/><path d="M150 168 A70 70 0 0 1 250 168" fill="none" stroke="#e31b23" stroke-width="3" opacity=".7"/><polygon points="${starPts(200,200,42,17)}" fill="#39ff88" style="filter:drop-shadow(0 0 10px #39ff88)"/>${nodes}</svg>`}
+const IC={cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',pin:'<path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-6 7-6s7 2.5 7 6M16 4a3.5 3.5 0 0 1 0 7M22 20c0-3-2-5-5-5.7"/>',check:'<path d="M5 12l5 5 9-11"/>',star:'<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>',flag:'<path d="M5 21V4h12l-2 4 2 4H5"/>',chat:'<path d="M4 5h16v11H9l-5 4z"/>'};
+function vHome(){const reg=!!MINE,canReg=CFG.open||ADMIN;return `<section class="hero"><div><div class="kicker"><i></i>${t('kick')}</div><h1 class="title" tabindex="-1" id="vh">SENEGAL<br>GAMING QUEST</h1><p class="sig">Choose Your Role. Join the Quest. Shape Senegal’s Gaming Future.</p><p class="lead">${t('lead')}</p><p class="muted" style="margin:0">${t('sub')}</p>
+ <div class="ev panel"><h2>${esc(CFG.title)}</h2><div class="meta"><span>${ico(IC.cal,2)}${esc(CFG.date)}</span><span>${ico(IC.pin,2)}${esc(CFG.venue)}</span></div><p style="margin:0">${esc(CFG.obj)}</p><ul class="obj"><li>${t('o1')}</li><li>${t('o2')}</li><li>${t('o3')}</li></ul></div>
+ <div class="cta">${reg&&!ADMIN?`<button class="btn big pulse" data-a="showpass">${t('mypass')}</button>`:`<button class="btn big pulse" data-a="start" ${canReg?'':'disabled'}>${t('start')}</button>`}<span class="timer">${ico(IC.clock,2)}${t('time')}</span></div><p style="margin:14px 0 0"><button class="linkb" data-a="find">${t('find')}</button></p>
+ ${!canReg?`<div class="notice">${t('closed')}</div>`:''}${OFFLINE?`<div class="notice">${t('nodb')}</div>`:''}${ADMIN?`<div class="notice" style="border-color:rgba(34,211,238,.4);background:rgba(34,211,238,.07);color:#bdf3ff">${t('kiosk')}</div>`:''}</div>
+ <div class="orbit" aria-hidden="false">${orbit()}</div></section>`}
+function vM1(){return mhead(1,'m1t',t('m1h'),t('m1s'))+`<div class="cards" role="radiogroup" aria-labelledby="vh">${ROLES.map((r,i)=>`<button type="button" class="pc" role="radio" aria-checked="${S.role===r.id}" data-a="role" data-id="${r.id}" style="--rc:${r.c}"><div class="art"><span class="lv">P${i+1}</span><span class="ok">${ico(IC.check,3)}</span>${ico(r.p,1.5)}</div><div class="tx"><h3>${r.name}</h3><div class="role">${esc(L==='fr'?r.fr:r.en)}</div><div class="desc">${esc(L==='fr'?r.dfr:r.den)}</div></div></button>`).join('')}</div><div class="nav"><button class="btn ghost" data-a="home">${t('back')}</button><button class="btn" data-a="next" ${S.role?'':'disabled'} id="n1">${t('next')} →</button></div>`}
+const fld=(k,lab,inp,opt)=>`<div class="fld"><label for="f_${k}">${lab}${opt?` <span class="opt">(${t('optional')})</span>`:' <span class="req" aria-hidden="true">*</span>'}</label>${inp}<div class="err" id="e_${k}">${errs[k]?esc(errs[k]):''}</div></div>`;
+const inp=(k,type,ac,extra='')=>`<input id="f_${k}" type="${type}" data-f="${k}" value="${esc(S.f[k])}" autocomplete="${ac}" aria-describedby="e_${k}" ${errs[k]?'aria-invalid="true"':''} ${extra}>`;
+function chips(g,opts,sel,max){return `<div class="chips" role="group" data-g="${g}" data-max="${max||0}">${opts.map(o=>`<button type="button" class="chip" data-a="chip" data-g="${g}" data-id="${o.id}" aria-pressed="${sel.includes(o.id)}">${esc(tx(o))}</button>`).join('')}</div>`}
+function vM2(){const r=RM[S.role];const sp=SPEC[S.role]||[];return mhead(2,'m2t',t('m2h'),'')+`<form class="form" novalidate data-form="m2">
+ ${fld('name',t('name'),inp('name','text','name','required'))}
+ <div class="grid2">${fld('email',t('email'),inp('email','email','email','required inputmode="email"'))}
+ ${fld('phone',t('phone'),`<div class="phone"><select id="f_code" data-f="code" aria-label="Indicatif">${CODES.map(c=>`<option ${S.f.code===c?'selected':''}>${c}</option>`).join('')}</select><input id="f_phone" type="tel" data-f="phone" value="${esc(S.f.phone)}" autocomplete="tel-national" inputmode="tel" placeholder="77 123 45 67" aria-describedby="e_phone" ${errs.phone?'aria-invalid="true"':''}></div>`)}</div>
+ <div class="grid2">${fld('org',t('org'),inp('org','text','organization'),1)}${fld('func',t('func'),inp('func','text','organization-title','required'))}</div>
+ <div class="grid2">${fld('region',t('region'),`<select id="f_region" data-f="region" aria-describedby="e_region" ${errs.region?'aria-invalid="true"':''}><option value="">${t('choose')}</option>${REGIONS.map(x=>`<option ${S.f.region===x?'selected':''}>${x}</option>`).join('')}<option value="intl" ${S.f.region==='intl'?'selected':''}>${t('intl')}</option></select>`)}
+ <div id="wCountry" ${S.f.region==='intl'?'':'hidden'}>${fld('country',t('country'),inp('country','text','country-name'))}</div></div>
+ <div class="grid2">${fld('web',t('web'),inp('web','url','url','placeholder="linkedin.com/in/…"'),1)}${fld('years',t('years'),`<select id="f_years" data-f="years"><option value="">${t('choose')}</option>${YEARS.map(y=>`<option value="${y.id}" ${S.f.years===y.id?'selected':''}>${esc(tx(y))}</option>`).join('')}</select>`,1)}</div>
+ <fieldset class="panel" style="border-color:${r.c}55;display:grid;gap:16px;margin:0"><legend class="mtag" style="padding:0 8px;color:${r.c}">${t('spec')} · ${r.name}</legend>
+ ${sp.map(q=>q.text?`<div class="fld"><label for="sp_${q.k}">${esc(tx(q))} <span class="opt">(${t('optional')})</span></label><input id="sp_${q.k}" type="text" data-sp="${q.k}" maxlength="160" value="${esc(S.spec[q.k]||'')}" placeholder="${esc(q.ph||'')}"></div>`:`<div class="fld"><span class="lbl" id="l_${q.k}">${esc(tx(q))} <span class="opt">(${t('optional')})</span></span>${chips('sp:'+q.k,q.o,S.spec[q.k]||[],q.max)}</div>`).join('')}
+ </fieldset></form><div class="nav"><button class="btn ghost" data-a="prev">${t('back')}</button><button class="btn" data-a="next">${t('next')} →</button></div>`}
+function slots(){return `<span class="slot" id="slots" aria-live="polite">${[0,1,2].map(i=>`<i class="${i<S.themes.length?'on':''}"></i>`).join('')} ${S.themes.length}/3</span>`}
+function vM3(){return mhead(3,'m3t',t('m3h'),'')+`<div class="form" style="max-width:980px">
+ <div class="fld"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><span class="lbl" id="l_th">${t('thT')} <span class="req">*</span> <span class="opt">${t('thS')}</span></span>${slots()}</div>
+ <div class="quests chips" role="group" aria-labelledby="l_th" data-g="themes" data-max="3">${THEMES.map((o,i)=>`<button type="button" class="chip" data-a="chip" data-g="themes" data-id="${o.id}" aria-pressed="${S.themes.includes(o.id)}"><span class="qi">${String(i+1).padStart(2,'0')}</span><span>${esc(tx(o))}</span></button>`).join('')}</div><div class="err" id="e_themes">${errs.themes||''}</div></div>
+ <div class="fld" style="max-width:760px"><span class="lbl">${t('chT')} <span class="req">*</span> <span class="opt">${t('chS')}</span></span>${chips('chal',CHAL,S.chal,0)}<div id="wChalO" ${S.chal.includes('other')?'':'hidden'}><input type="text" id="f_chalO" data-x="chalO" maxlength="120" value="${esc(S.chalO)}" aria-label="${t('chO')}" placeholder="${t('chO')}"></div><div class="err" id="e_chal">${errs.chal||''}</div></div>
+ <div class="fld" style="max-width:760px"><label for="f_contrib">${t('coT')} <span class="opt">(${t('optional')})</span></label><textarea id="f_contrib" data-x="contrib" maxlength="250" placeholder="${t('coP')}">${esc(S.contrib)}</textarea><div class="count" id="cc">${S.contrib.length}/250</div></div>
+ <div class="fld" style="max-width:760px"><span class="lbl">${t('exT')} <span class="req">*</span> <span class="opt">${t('chS')}</span></span>${chips('exp',EXPE,S.exp,0)}<div class="err" id="e_exp">${errs.exp||''}</div></div>
+ </div><div class="nav"><button class="btn ghost" data-a="prev">${t('back')}</button><button class="btn" data-a="next">${t('next')} →</button></div>`}
+const regionLabel=d=>d.region==='intl'?(d.country||t('intl')):(d.region||'—');
+function passCard(d,opts={}){const r=RM[d.role]||ROLES[7];return `<div class="pass" style="--rc:${r.c}"><div><div class="ph"><span>SENEGAL GAMING QUEST</span><span>${opts.status?`<span class="stat ${opts.status==='waitlist'?'w':''}">${opts.status==='waitlist'?t('wait'):t('conf')}</span>`:t('passT')}</span></div>
+ <div class="pname">${esc(d.name||'—')}</div><div class="prole">${ico(r.p)}<span>${r.name}</span></div>
+ <dl class="pgrid"><div><dt>${t('org')}</dt><dd>${esc(d.org||t('org0'))}</dd></div><div><dt>${t('region')}</dt><dd>${esc(regionLabel(d))}</dd></div></dl>
+ <div class="ptags">${(d.themes||[]).map(x=>`<span>${esc(tx(TM[x]))}</span>`).join('')}</div>
+ ${opts.pid?`<div class="qr">${opts.qr?`<div class="code" aria-label="QR code">${opts.qr}</div>`:''}<div><div class="small muted">${t('pidL')}</div><div class="pid">${esc(opts.pid)}</div><div class="small muted">${t('showQr')}</div><div class="small muted" style="margin-top:6px">${esc(CFG.title)}<br>${esc(CFG.date)} · ${esc(CFG.venue)}</div></div></div>`:''}</div></div>`}
+const flat=()=>({role:S.role,...S.f,themes:S.themes});
+function vM4(){return mhead(4,'m4t',t('m4h'),'')+`<div class="summary"><div style="display:grid;gap:10px"><span class="lbl">${t('recap')}</span>${passCard(flat())}<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="ib" data-a="goto" data-id="m1">${t('edit')} : ${t('m')} 01</button><button class="ib" data-a="goto" data-id="m2">${t('m')} 02</button><button class="ib" data-a="goto" data-id="m3">${t('m')} 03</button></div></div>
+ <div class="form"><label class="check"><input type="checkbox" id="f_consent" data-c="consent" ${S.consent?'checked':''} aria-describedby="e_consent"><span>${t('consent')} <span class="req">${t('consentR')}</span><br><button type="button" class="linkb small" data-a="privacy">${t('readPol')}</button></span></label><div class="err" id="e_consent">${errs.consent||''}</div>
+ <label class="check"><input type="checkbox" data-c="news" ${S.news?'checked':''}><span>${t('news')} <span class="opt">(${t('optional')})</span></span></label>
+ <p class="small muted" style="margin:0">${t('symb')}</p>
+ ${lastErr?`<div class="alert" role="alert">${esc(lastErr)}</div>`:''}
+ <div class="nav" style="margin-top:6px"><button class="btn ghost" data-a="prev">${t('back')}</button><button class="btn big" data-a="submit" id="bSubmit" ${saving||(!CFG.open&&!ADMIN)?'disabled':''}>${saving?t('saving'):t('complete')}</button></div>
+ ${!CFG.open&&!ADMIN?`<div class="notice">${t('eClosed')}</div>`:''}</div></div>`}
+function qrSvg(text){try{if(!window.qrcode)return '';const q=qrcode(0,'M');q.addData(text);q.make();const n=q.getModuleCount();let p='';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))p+=`M${c} ${r}h1v1h-1z`;return `<svg viewBox="-1 -1 ${n+2} ${n+2}" shape-rendering="crispEdges"><path d="${p}" fill="#060a18"/></svg>`}catch(e){return ''}}
+const qrText=d=>`SGQ:${d.passId}`;
+function vDone(){const d=MINE;if(!d)return vHome();const r=RM[d.role]||ROLES[7];const qr=CFG.qr?qrSvg(qrText(d)):'';const bad=[[d.role,r.b[0],t('bRoleD'),r.c,r.p],['q','Quest Master',t('bQuestD'),'#22d3ee',IC.flag]];if(d.pioneer)bad.push(['p',t('bPion'),t('bPionD'),'#fdef42',IC.star]);if(d.contrib)bad.push(['v',t('bVoice'),t('bVoiceD'),'#a78bfa',IC.chat]);
+ return `<div class="done"><div class="burst" id="burst"></div><h1 tabindex="-1" id="vh">${t('done')}</h1><p class="lead" style="max-width:640px">${t('welcome')}</p><div style="width:min(100%,560px)">${hud(5)}</div></div>
+ <div class="summary"><div style="display:grid;gap:12px;justify-items:start">${passCard(d,{pid:d.passId,qr,status:d.status})}<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" data-a="dlpass" id="bDl">${t('dl')}</button>${ADMIN?`<button class="btn ghost" data-a="newreg">${t('newReg')}</button>`:''}</div><div id="dlMsg" class="small muted"></div></div>
+ <div style="display:grid;gap:16px">${d.status==='waitlist'?`<div class="notice">${t('waitMsg')}</div>`:''}<div class="panel" style="display:grid;gap:12px"><h2 style="font-size:20px">${t('badges')}</h2><div class="badges">${bad.map(b=>`<div class="bdg" style="--bc:${b[3]}"><span class="hx">${ico(b[4],2.2)}</span><span><b>${esc(b[1])}</b><span class="small muted">${esc(b[2])}</span></span></div>`).join('')}</div><p class="small muted" style="margin:0">${t('symb')}</p></div>
+ <div class="okmsg">${d.emailSent?t('sent'):CFG.emailSvc?t('mailOn'):t('mailOff')}</div></div></div>`}
+
+/* ---------- render ---------- */
+const VIEWS={home:vHome,m1:vM1,m2:vM2,m3:vM3,m4:vM4,done:vDone,admin:()=>vAdmin()};
+function render(focus=true){chrome();const app=$('#app');app.innerHTML=VIEWS[S.view]();if(S.view==='done')burst();if(S.view==='admin')adminFill();if(focus){const h=$('#vh');if(h)h.focus({preventScroll:true});scrollTo({top:0,behavior:PREF.rm?'auto':'smooth'})}}
+function go(v){S.view=v;errs={};lastErr='';saveDraft();if(v!=='admin'&&location.hash==='#admin')history.replaceState(null,'',location.pathname+location.search);render()}
+function unlock(u,s,next){blip(880,.09);setTimeout(()=>blip(1175,.12),90);const ov=$('#ov');$('#ovU').textContent=u;$('#ovS').textContent=s;ov.classList.add('show');setTimeout(()=>{ov.classList.remove('show');go(next)},PREF.rm?650:1150)}
+function burst(){if(PREF.rm)return;const b=$('#burst');if(!b)return;const cols=['#39ff88','#22d3ee','#a78bfa','#fdef42','#e31b23','#00853f'];b.innerHTML=Array.from({length:44},(_,i)=>{const a=Math.random()*Math.PI*2,d=120+Math.random()*260;return `<i style="background:${cols[i%6]};--x:${(Math.cos(a)*d).toFixed(0)}px;--y:${(Math.sin(a)*d*.7+60).toFixed(0)}px"></i>`}).join('')}
+
+/* ---------- validation ---------- */
+const EMRE=/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+function vStep2(){const f=S.f,e={};if(f.name.trim().length<3||!/\s/.test(f.name.trim()))e.name=t('eName');if(!EMRE.test(f.email.trim()))e.email=t('eEmail');const p=f.phone.replace(/[\s.\-()]/g,'');if(f.code==='+221'?!/^(7[05678]\d{7}|3[03]\d{7})$/.test(p):!/^\d{6,14}$/.test(p))e.phone=t('ePhone');if(f.func.trim().length<2)e.func=t('eFunc');if(!f.region)e.region=t('eRegion');if(f.region==='intl'&&f.country.trim().length<2)e.country=t('eCountry');if(f.web.trim()&&!/^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(f.web.trim()))e.web=t('eWeb');return e}
+function vStep3(){const e={};if(!S.themes.length)e.themes=t('eThemes');if(!S.chal.length)e.chal=t('eChal');if(!S.exp.length)e.exp=t('eExp');return e}
+function showErrs(){render(false);const k=Object.keys(errs)[0];const el=$('#f_'+k)||$('#e_'+k);if(el){el.scrollIntoView({block:'center',behavior:PREF.rm?'auto':'smooth'});if(el.focus)el.focus({preventScroll:true})}live(Object.values(errs).join(' '));blip(180,.15,'sawtooth')}
+function next(){const v=S.view;if(v==='m1'&&S.role)return unlock(t('sel'),t('selS'),'m2');if(v==='m2'){errs=vStep2();if(Object.keys(errs).length)return showErrs();return unlock(t('built'),t('builtS'),'m3')}if(v==='m3'){errs=vStep3();if(Object.keys(errs).length)return showErrs();return unlock(t('chosen'),t('chosenS'),'m4')}}
+
+/* ---------- chips ---------- */
+function getSel(g){if(g==='themes')return S.themes;if(g==='chal')return S.chal;if(g==='exp')return S.exp;const k=g.slice(3);return S.spec[k]=S.spec[k]||[]}
+function setSel(g,a){if(g==='themes')S.themes=a;else if(g==='chal')S.chal=a;else if(g==='exp')S.exp=a;else S.spec[g.slice(3)]=a}
+function syncGroup(g){const sel=getSel(g);document.querySelectorAll(`.chip[data-g="${CSS.escape(g)}"]`).forEach(b=>{const on=sel.includes(b.dataset.id);b.setAttribute('aria-pressed',on);const grp=b.closest('[data-max]');const max=+(grp?.dataset.max||0);b.setAttribute('aria-disabled',max>1&&!on&&sel.length>=max)});if(g==='themes'){const s=$('#slots');if(s)s.outerHTML=slots()}if(g==='chal'){const w=$('#wChalO');if(w)w.hidden=!sel.includes('other')}}
+function toggleChip(b){const g=b.dataset.g,id=b.dataset.id,max=+(b.closest('[data-max]')?.dataset.max||0);let sel=[...getSel(g)];if(sel.includes(id))sel=sel.filter(x=>x!==id);else if(max===1)sel=[id];else if(max&&sel.length>=max){live(t('max3'));blip(200,.12,'sawtooth');const e=$('#e_themes');if(e)e.textContent=t('max3');return}else sel.push(id);setSel(g,sel);blip(sel.includes(id)?740:440,.05);const e=document.getElementById('e_'+g);if(e)e.textContent='';syncGroup(g);saveDraft()}
+
+/* ---------- submit ---------- */
+function rid(n,alpha='abcdefghijkmnpqrstuvwxyz23456789'){const a=new Uint8Array(n);crypto.getRandomValues(a);return [...a].map(x=>alpha[x%alpha.length]).join('')}
+function errMsg(e){const c=e&&e.code;if(c==='network'||!navigator.onLine)return t('eNet');if(c==='dup')return t('eDup');if(c==='closed')return t('eClosed');if(c==='consent')return t('eConsent');if(c==='http429')return t('eRate');return t('eGen')}
+async function submit(){if(saving)return;errs={};lastErr='';if(!S.consent){errs.consent=t('eConsent');return showErrs()}const e2=vStep2(),e3=vStep3();if(Object.keys(e2).length){errs=e2;return go('m2')}if(Object.keys(e3).length){errs=e3;return go('m3')}
+ if(!CFG.open&&!ADMIN){lastErr=t('eClosed');return render(false)}
+ saving=true;render(false);
+ const body={consent:true,role:S.role,name:S.f.name.trim(),email:S.f.email.trim().toLowerCase(),phoneCode:S.f.code,phone:S.f.phone,org:S.f.org.trim(),func:S.f.func.trim(),region:S.f.region,country:S.f.region==='intl'?S.f.country.trim():'',web:S.f.web.trim(),years:S.f.years,spec:S.spec,themes:S.themes.slice(0,3),chal:S.chal,chalO:S.chal.includes('other')?S.chalO.trim():'',contrib:S.contrib.trim().slice(0,250),exp:S.exp,news:!!S.news,lang:L};
+ try{const res=await retryNet(()=>api('/rest/v1/rpc/sgq_register',{method:'POST',body:{p:body},keep:true,anon:!ADMIN}));
+  if(!res||!res.passId)throw {code:'invalid'};
+  MINE={role:body.role,name:body.name,org:body.org,region:body.region,country:body.country,themes:body.themes,contrib:body.contrib,passId:res.passId,status:res.status,pioneer:!!res.pioneer,emailSent:!!res.emailSent};
+  if(!ADMIN)LS.set('sgq.pass',MINE);
+  saving=false;LS.del('sgq.draft');const keepLang=L;S=blank();L=keepLang;S.view='done';fanfare();render();if(ADMIN)loadRegs()}
+ catch(e){saving=false;lastErr=errMsg(e);render(false);const a=document.querySelector('.alert');if(a)a.scrollIntoView({block:'center'})}}
+function openFind(){openModal(`<h2 id="mTitle" style="font-size:24px;margin-bottom:8px">${t('find')}</h2><p class="muted">${t('findS')}</p><form class="form" data-form="find"><div class="fld"><label for="fp_e">${t('email')}</label><input id="fp_e" type="email" autocomplete="email" required></div><div class="fld"><label for="fp_p">${t('pidL')}</label><input id="fp_p" type="text" placeholder="SGQ-XXXXXX" autocapitalize="characters" required></div><div id="fpMsg" class="err" role="alert"></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" type="submit">${t('findBtn')}</button><button type="button" class="btn ghost" data-a="mclose">${t('close')}</button></div></form>`)}
+async function doFind(){const m=$('#fpMsg');m.textContent='';try{const r=await api('/rest/v1/rpc/sgq_find_pass',{method:'POST',body:{p_email:$('#fp_e').value,p_pass:$('#fp_p').value},anon:true,keep:true});if(!r)throw {status:404};MINE={...r,contrib:r.contrib?'1':'',emailSent:false};if(!ADMIN)LS.set('sgq.pass',MINE);closeModal();go('done')}catch(e){m.textContent=e.status===404?t('findNo'):errMsg(e)}}
+
+/* ---------- pass download ---------- */
+function wrap(c,txt,x,y,w,lh,maxL=3){const words=String(txt).split(/\s+/);let line='',n=0;for(const wd of words){const tt=line?line+' '+wd:wd;if(c.measureText(tt).width>w&&line){c.fillText(line,x,y);y+=lh;line=wd;if(++n>=maxL-1){}}else line=tt}c.fillText(line,x,y);return y+lh}
+async function dlPass(){const d=MINE;if(!d)return;const msg=$('#dlMsg');try{await document.fonts.ready}catch(e){}
+ const r=RM[d.role]||ROLES[7];const W=1000,H=1500,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+ const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#141e4d');g.addColorStop(1,'#060a18');x.fillStyle=g;x.fillRect(0,0,W,H);
+ const rg=x.createRadialGradient(W,0,0,W,0,700);rg.addColorStop(0,r.c+'55');rg.addColorStop(1,'transparent');x.fillStyle=rg;x.fillRect(0,0,W,H);
+ x.strokeStyle=r.c;x.lineWidth=6;x.strokeRect(24,24,W-48,H-48);
+ [['#00853f',0],['#fdef42',1],['#e31b23',2]].forEach(([col,i])=>{x.fillStyle=col;x.fillRect(24+i*(W-48)/3,24,(W-48)/3,14)});
+ x.fillStyle='#22d3ee';x.font='700 30px "Chakra Petch",sans-serif';x.fillText('SENEGAL GAMING QUEST',70,110);x.fillStyle='#9eabd3';x.font='600 26px "Chakra Petch",sans-serif';x.fillText(t('passT')+' · '+(d.status==='waitlist'?t('wait'):t('conf')),70,150);
+ x.fillStyle='#ffffff';x.font='700 66px "Chakra Petch",sans-serif';let y=wrap(x,d.name,70,250,W-140,72,2);
+ x.fillStyle=r.c;x.font='700 40px "Chakra Petch",sans-serif';x.fillText(r.name,70,y+10);y+=60;
+ x.fillStyle='#9eabd3';x.font='500 26px Inter,sans-serif';x.fillText(t('org'),70,y+20);x.fillText(t('region'),540,y+20);x.fillStyle='#eaf0ff';x.font='600 30px Inter,sans-serif';wrap(x,d.org||'—',70,y+60,430,36,2);x.fillText(regionLabel(d),540,y+60);y+=150;
+ x.font='500 26px Inter,sans-serif';for(const th of (d.themes||[])){x.fillStyle=r.c;x.fillRect(70,y-18,10,10);x.fillStyle='#eaf0ff';y=wrap(x,tx(TM[th]),95,y,W-170,34,2)+6}
+ let qy=Math.max(y+30,880);if(CFG.qr&&window.qrcode){try{const q=qrcode(0,'M');q.addData(qrText(d));q.make();const n=q.getModuleCount(),sz=380,cs=Math.floor(sz/(n+4)),ox=70,oy=qy;x.fillStyle='#fff';x.fillRect(ox,oy,cs*(n+4),cs*(n+4));x.fillStyle='#060a18';for(let i=0;i<n;i++)for(let j=0;j<n;j++)if(q.isDark(i,j))x.fillRect(ox+(j+2)*cs,oy+(i+2)*cs,cs,cs)}catch(e){}}
+ x.fillStyle='#9eabd3';x.font='500 26px Inter,sans-serif';x.fillText(t('pidL'),500,qy+40);x.fillStyle='#39ff88';x.font='700 54px "Chakra Petch",sans-serif';x.fillText(d.passId,500,qy+100);x.fillStyle='#9eabd3';x.font='500 24px Inter,sans-serif';wrap(x,t('showQr'),500,qy+150,430,30,2);
+ x.fillStyle='#eaf0ff';x.font='600 26px Inter,sans-serif';wrap(x,CFG.title,70,H-150,W-140,32,2);x.fillStyle='#9eabd3';x.font='500 24px Inter,sans-serif';x.fillText(CFG.date+' · '+CFG.venue,70,H-75);
+ const blob=await new Promise(res=>c.toBlob(res,'image/png'));if(!blob){msg.textContent=t('dlNo');return}saveBlob(`gaming-pass-${d.passId}.png`,blob);msg.textContent=''}
+
+/* ---------- privacy ---------- */
+function privacy(){const ctl=esc(CFG.controller||CFG_DEF.controller),em=CFG.privacyEmail?`<a href="mailto:${esc(CFG.privacyEmail)}">${esc(CFG.privacyEmail)}</a> (${esc(CFG.privacyEmail)})`:(L==='fr'?'l’équipe organisatrice':'the organising team');
+ const fr=`<p>Les données que tu fournis (identité, coordonnées, profil, réponses au questionnaire) sont traitées par ${ctl} pour : gérer ton inscription à l’atelier, organiser l’accueil (contrôle du pass) et produire une cartographie <strong>agrégée</strong> de l’écosystème gaming sénégalais.</p><p><strong>Base :</strong> ton consentement, que tu peux retirer à tout moment. <strong>Destinataires :</strong> la seule équipe organisatrice ; aucune revente. <strong>Durée :</strong> jusqu’à 12 mois après l’atelier, puis suppression ou anonymisation. La réception d’informations sur les prochaines initiatives est facultative et séparée.</p><p>Conformément à la loi n° 2008-12 du 25 janvier 2008 sur la protection des données à caractère personnel, tu disposes d’un droit d’accès, de rectification, d’opposition et de suppression auprès de ${em}. Tu peux aussi saisir la Commission de Protection des Données Personnelles (CDP).</p>`;
+ const en=`<p>The data you provide (identity, contact details, profile, survey answers) is processed by ${ctl} to manage your workshop registration, run check-in at the venue and produce an <strong>aggregated</strong> map of Senegal’s gaming ecosystem.</p><p><strong>Basis:</strong> your consent, which you can withdraw at any time. <strong>Recipients:</strong> the organising team only; never sold. <strong>Retention:</strong> up to 12 months after the workshop, then deleted or anonymised. Receiving news about upcoming initiatives is optional and separate.</p><p>Under Senegal’s Law No. 2008-12 of 25 January 2008 on personal data protection, you have the right to access, correct, object to and delete your data by contacting ${em}. You may also contact the Personal Data Protection Commission (CDP).</p>`;
+ openModal(`<h2 id="mTitle" style="font-size:24px;margin-bottom:14px">${t('polT')}</h2>${L==='fr'?fr:en}<div style="margin-top:16px"><button class="btn" data-a="mclose">${t('close')}</button></div>`)}
+let lastFocus=null;
+function openModal(h){lastFocus=document.activeElement;$('#mBody').innerHTML=h;$('#modal').classList.add('show');const b=$('#mBody').querySelector('button,input,select');if(b)b.focus()}
+function closeModal(){$('#modal').classList.remove('show');if(lastFocus&&lastFocus.focus)lastFocus.focus()}
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#modal').classList.contains('show'))closeModal()});
+
+/* ================= ADMIN ================= */
+let REGS=new Map(),CHK=new Map(),A={tab:'overview',q:'',role:'',region:'',theme:'',ci:'',confirmDel:''},regUnsub=null,chkUnsub=null,admLoad='loading';
+async function loadRegs(){if(!ADMIN)return;try{let off=0,all=[];for(;;){const j=await api(`/rest/v1/registrations?select=*&order=created.desc&limit=1000&offset=${off}`);all=all.concat((j||[]).map(fromDb));if(!j||j.length<1000)break;off+=1000}
+ REGS=new Map(all.map(d=>[d.id,{...d,createdAt:d.created||''}]));CHK=new Map(all.filter(d=>d.checkedInAt).map(d=>[d.id,{at:d.checkedInAt}]));admLoad='ok'}catch(e){admLoad=e.status===401||e.status===403?'auth':'err'}if(S.view==='admin'){if(!ADMIN)render();else adminFill()}}
+function adminSubscribe(){if(!ADMIN)return;loadRegs();clearInterval(window.__poll);window.__poll=setInterval(()=>{if(S.view==='admin'&&!document.hidden)loadRegs()},30000)}
+async function login(form){const m=$('#lgMsg');m.textContent='';try{const j=await api('/auth/v1/token?grant_type=password',{method:'POST',body:{email:form.querySelector('#lg_e').value.trim(),password:form.querySelector('#lg_p').value},anon:true,keep:true});TOK=j.access_token;RTOK=j.refresh_token;const ok=await api('/rest/v1/rpc/is_organizer',{method:'POST',body:{},keep:true});if(ok!==true){TOK='';RTOK='';throw {status:403}}ORG={id:j.user.id,name:j.user.email};ADMIN=true;LS.set('sgq.tok',TOK);LS.set('sgq.rtok',RTOK);LS.set('sgq.org',ORG);admLoad='loading';render();adminSubscribe()}catch(e){m.textContent=e.status===403?tt('Ce compte n’est pas autorisé comme organisateur.','This account is not an authorised organiser.'):e.status===400||e.status===401?tt('E-mail ou mot de passe incorrect.','Wrong email or password.'):e.code==='http429'?t('eRate'):t('eNet')}}
+const TABS=[['overview','Vue d’ensemble','Overview'],['people','Participants','Participants'],['checkin','Check-in','Check-in'],['settings','Paramètres','Settings']];
+const tt=(fr,en)=>L==='fr'?fr:en;
+function vAdmin(){if(!ADMIN)return `<div class="mhead"><span class="mtag">${tt('ESPACE ORGANISATEURS','ORGANISER CONSOLE')}</span><h1 id="vh" tabindex="-1">${tt('Connexion organisateurs','Organiser sign-in')}</h1><p class="muted" style="margin:0">${t('noAdmin')}</p></div><form class="form panel" data-form="login" style="max-width:480px"><div class="fld"><label for="lg_e">E-mail</label><input id="lg_e" type="email" autocomplete="username" required></div><div class="fld"><label for="lg_p">${tt('Mot de passe','Password')}</label><input id="lg_p" type="password" autocomplete="current-password" required style="width:100%;min-height:48px;padding:11px 14px;font:16px Inter,sans-serif;color:var(--ink);background:rgba(5,9,26,.85);border:1px solid var(--line2);border-radius:12px"></div><div id="lgMsg" class="err" role="alert"></div><button class="btn" type="submit">${tt('Se connecter','Sign in')}</button></form>`;
+ const tabs=`<div class="tabs" role="tablist">${TABS.map(x=>`<button class="tab" role="tab" aria-selected="${A.tab===x[0]}" data-a="atab" data-id="${x[0]}">${tt(x[1],x[2])}</button>`).join('')}</div>`;
+ let body='';
+ if(A.tab==='people')body=`<div class="toolbar"><input type="search" id="aq" data-af="q" value="${esc(A.q)}" placeholder="${tt('Rechercher nom, e-mail, organisation, pass…','Search name, email, organisation, pass…')}" aria-label="${tt('Rechercher','Search')}">
+  <select data-af="role" aria-label="Profil"><option value="">${tt('Tous profils','All profiles')}</option>${ROLES.map(r=>`<option value="${r.id}" ${A.role===r.id?'selected':''}>${r.name}</option>`).join('')}</select>
+  <select data-af="region" aria-label="Région"><option value="">${tt('Toutes régions','All regions')}</option>${REGIONS.map(x=>`<option ${A.region===x?'selected':''}>${x}</option>`).join('')}<option value="intl" ${A.region==='intl'?'selected':''}>${t('intl')}</option></select>
+  <select data-af="theme" aria-label="Thème"><option value="">${tt('Tous thèmes','All topics')}</option>${THEMES.map(x=>`<option value="${x.id}" ${A.theme===x.id?'selected':''}>${esc(tx(x))}</option>`).join('')}</select>
+  <select data-af="ci" aria-label="Statut"><option value="">${tt('Tous statuts','All statuses')}</option><option value="in" ${A.ci==='in'?'selected':''}>${tt('Présents','Checked in')}</option><option value="out" ${A.ci==='out'?'selected':''}>${tt('Non arrivés','Not arrived')}</option><option value="wait" ${A.ci==='wait'?'selected':''}>${tt('Liste d’attente','Waitlist')}</option><option value="dup" ${A.ci==='dup'?'selected':''}>${tt('Doublons possibles','Possible duplicates')}</option></select></div>
+  <div class="acts"><span id="acount" class="muted"></span><span style="flex:1"></span><button class="ib" data-a="csv">${tt('Exporter CSV','Export CSV')}</button><button class="ib" data-a="xlsx">${tt('Exporter Excel','Export Excel')}</button></div><div id="amsg" class="small muted"></div><div id="alist"></div>`;
+ else if(A.tab==='checkin')body=`<div class="panel" style="display:grid;gap:14px;max-width:760px"><h2 style="font-size:20px">${tt('Contrôle des Gaming Pass','Gaming Pass check')}</h2><p class="muted" style="margin:0">${tt('Saisis l’identifiant du pass (ex. SGQ-7KQ2MD) ou colle le contenu lu par un lecteur QR.','Type the pass ID (e.g. SGQ-7KQ2MD) or paste the content read by a QR scanner.')}</p><form class="ci" data-form="ci"><input type="text" id="ciq" autocomplete="off" autocapitalize="characters" placeholder="SGQ-XXXXXX" aria-label="Pass ID" style="font:700 20px var(--hf);letter-spacing:.06em"><button class="btn" type="submit">${tt('Vérifier','Check')}</button></form><div id="cires"></div></div><div class="kpis" id="cikpi" style="margin-top:16px"></div><div class="panel"><h2 style="font-size:19px;margin-bottom:12px">${tt('Derniers check-ins','Latest check-ins')}</h2><div id="cilist"></div></div>`;
+ else if(A.tab==='settings')body=settingsForm();
+ else body=`<div id="aover"></div>`;
+ return `<div class="mhead"><span class="mtag">${tt('ESPACE ORGANISATEURS','ORGANISER CONSOLE')}</span><h1 tabindex="-1" id="vh">${tt('Cartographie de l’écosystème','Ecosystem map')}</h1><p class="muted" style="margin:0" id="astat"></p><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="small muted">${esc(ORG&&ORG.name||'')}</span><button class="ib" data-a="reload">${tt('Actualiser','Refresh')}</button><button class="ib" data-a="logout">${tt('Déconnexion','Sign out')}</button></div></div>${tabs}${body}`}
+const isIn=id=>CHK.has(id);
+function dupSet(){const m={};for(const [id,d] of REGS){const k=(d.email||'').toLowerCase();(m[k]=m[k]||[]).push(id)}const s=new Set();for(const k in m)if(m[k].length>1)m[k].forEach(i=>s.add(i));return s}
+function count(arrFn,ids){const c={};for(const [id,d] of REGS){const v=arrFn(d);(Array.isArray(v)?v:[v]).forEach(x=>{if(x)c[x]=(c[x]||0)+1})}return c}
+function bars(rows,color){const max=Math.max(1,...rows.map(r=>r[1]));const tot=[...REGS.values()].length||1;if(!rows.some(r=>r[1]))return `<div class="empty">${tt('Pas encore de données','No data yet')}</div>`;return `<div class="bars">${rows.map(r=>`<div class="brow" style="--bc:${r[2]||color}"><div class="bt"><span>${esc(r[0])}</span><span></span></div><div class="track"><div class="fill" style="width:${(r[1]/max*100).toFixed(1)}%"></div></div><div class="v">${r[1]} <span class="muted small">${Math.round(r[1]/tot*100)}%</span></div></div>`).join('')}</div>`}
+function adminFill(){if(!ADMIN)return;const st=$('#astat');const tot=REGS.size;if(st)st.textContent=admLoad==='err'?tt('Impossible de charger les inscriptions (réseau). Nouvel essai automatique dans 30 s.','Couldn’t load registrations (network). Retrying in 30 s.'):admLoad==='slow'?tt('Les données ne sont pas encore joignables ; affichage possiblement incomplet.','Data not reachable yet; display may be incomplete.'):admLoad==='loading'?tt('Chargement…','Loading…'):`${tot} ${tt('inscriptions','registrations')} · ${esc(CFG.title)}`;
+ if(A.tab==='overview')fillOverview();else if(A.tab==='people')fillPeople();else if(A.tab==='checkin')fillCheckin()}
+function fillOverview(){const el=$('#aover');if(!el)return;const all=[...REGS.values()],tot=all.length,cap=+CFG.capacity||0,ins=[...REGS.keys()].filter(isIn).length,wait=all.filter(d=>d.status==='waitlist').length,news=all.filter(d=>d.news).length,intl=all.filter(d=>d.region==='intl').length,dups=dupSet().size;
+ const kp=[[tot,tt('Inscriptions','Registrations')+(cap?` / ${cap}`:'')],[cap?Math.round(tot/cap*100)+'%':'—',tt('Taux de remplissage','Capacity filled')],[ins,tt('Check-ins','Check-ins')],[wait,tt('Liste d’attente','Waitlist')],[news,tt('Opt-in actualités','News opt-in')],[intl,tt('International / diaspora','International / diaspora')],[dups,tt('Doublons possibles','Possible duplicates')]];
+ const rc=count(d=>d.role),reg=count(d=>d.region),th=count(d=>d.themes),ch=count(d=>d.chal),ex=count(d=>d.exp);
+ const maxR=Math.max(1,...REGIONS.map(x=>reg[x]||0));
+ const carto=`<div class="carto" role="img" aria-label="${tt('Carte schématique des inscriptions par région','Schematic map of registrations by region')}">${CARTO.flat().map(x=>x?`<div class="tile" style="background:color-mix(in srgb,#39ff88 ${Math.round(((reg[x]||0)/maxR)*70)}%,rgba(255,255,255,.03));${(reg[x]||0)/maxR>.55?'color:#04130b':''}"><span>${x}</span><b>${reg[x]||0}</b></div>`:'<div class="tile e"></div>').join('')}</div><p class="small muted" style="margin:10px 0 0">${tt('Carte schématique (positions approximatives).','Schematic map (approximate positions).')} ${t('intl')} : <b>${reg.intl||0}</b></p>`;
+ const contribs=[...REGS.entries()].filter(([,d])=>d.contrib).sort((a,b)=>(b[1].createdAt||'').localeCompare(a[1].createdAt||'')).slice(0,60);
+ const sortRows=(o,list)=>list.map(x=>[tx(x),o[x.id]||0]).sort((a,b)=>b[1]-a[1]);
+ const others=all.filter(d=>d.chalO).map(d=>d.chalO);
+ el.innerHTML=`<div class="kpis">${kp.map(k=>`<div class="kpi"><div class="n">${k[0]}</div><div class="l">${k[1]}</div></div>`).join('')}</div>
+ <div class="dash"><div class="panel"><h2>${tt('Répartition par catégorie d’acteurs','Breakdown by player type')}</h2>${bars(ROLES.map(r=>[r.name+' · '+(L==='fr'?r.fr:r.en).split(',')[0],rc[r.id]||0,r.c]).sort((a,b)=>b[1]-a[1]))}</div>
+ <div class="panel"><h2>${tt('Répartition géographique','Geographic spread')}</h2>${carto}</div>
+ <div class="panel"><h2>${tt('Thématiques les plus demandées','Most requested topics')}</h2>${bars(sortRows(th,THEMES),'#22d3ee')}</div>
+ <div class="panel"><h2>${tt('Principaux besoins et obstacles','Main needs and obstacles')}</h2>${bars(sortRows(ch,CHAL),'#ff8a5b')}${others.length?`<details style="margin-top:12px"><summary class="small">${tt('Réponses « Autre »','“Other” answers')} (${others.length})</summary><ul class="small">${others.slice(0,50).map(o=>`<li>${esc(o)}</li>`).join('')}</ul></details>`:''}</div>
+ <div class="panel"><h2>${tt('Attentes vis-à-vis de l’atelier','Expectations for the workshop')}</h2>${bars(sortRows(ex,EXPE),'#a78bfa')}</div>
+ <div class="panel"><h2>${tt('Contributions potentielles','Potential contributions')} (${contribs.length})</h2>${contribs.length?`<div class="feed">${contribs.map(([,d])=>{const r=RM[d.role]||ROLES[7];return `<blockquote style="--bc:${r.c}">${esc(d.contrib)}<cite>${esc(d.name)} · ${r.name}${d.org?' · '+esc(d.org):''} · ${esc(regionLabel(d))}</cite></blockquote>`}).join('')}</div>`:`<div class="empty">${tt('Pas encore de contributions','No contributions yet')}</div>`}</div></div>`}
+function filtered(){const q=A.q.trim().toLowerCase(),dups=dupSet();return [...REGS.entries()].filter(([id,d])=>{if(A.role&&d.role!==A.role)return false;if(A.region&&d.region!==A.region)return false;if(A.theme&&!(d.themes||[]).includes(A.theme))return false;if(A.ci==='in'&&!isIn(id))return false;if(A.ci==='out'&&isIn(id))return false;if(A.ci==='wait'&&d.status!=='waitlist')return false;if(A.ci==='dup'&&!dups.has(id))return false;if(q&&![d.name,d.email,d.org,d.passId,d.func,d.phone].join(' ').toLowerCase().includes(q))return false;return true}).sort((a,b)=>(b[1].createdAt||'').localeCompare(a[1].createdAt||''))}
+function fillPeople(){const el=$('#alist');if(!el)return;const rows=filtered(),dups=dupSet();$('#acount').textContent=`${rows.length} / ${REGS.size}`;
+ if(!rows.length){el.innerHTML=`<div class="empty panel">${REGS.size?tt('Aucun participant ne correspond aux filtres.','No participant matches the filters.'):tt('Aucune inscription pour le moment.','No registrations yet.')}</div>`;return}
+ el.innerHTML=`<div class="panel" style="padding:8px 14px"><table class="stack"><thead><tr><th>Pass</th><th>${tt('Nom','Name')}</th><th>${tt('Profil','Profile')}</th><th>${tt('Organisation','Organisation')}</th><th>${tt('Région','Region')}</th><th>${tt('Statut','Status')}</th><th></th></tr></thead><tbody>${rows.slice(0,400).map(([id,d])=>{const r=RM[d.role]||ROLES[7];return `<tr><td style="white-space:nowrap;font-family:var(--hf);font-weight:700">${esc(d.passId)}</td><td><b>${esc(d.name)}</b><br><span class="small muted">${esc(d.email)}</span>${dups.has(id)?`<br><span class="dup">${tt('Doublon possible','Possible duplicate')}</span>`:''}</td><td style="color:${r.c}">${r.name}</td><td>${esc(d.org||'—')}</td><td>${esc(regionLabel(d))}</td><td>${d.status==='waitlist'?`<span class="stat w">${t('wait')}</span>`:`<span class="stat">${t('conf')}</span>`}${isIn(id)?`<br><span class="small" style="color:var(--g)">✓ ${tt('Présent','Checked in')}</span>`:''}</td><td style="white-space:nowrap"><button class="ib" data-a="afiche" data-id="${esc(id)}">${tt('Fiche','Details')}</button> <button class="ib" data-a="aci" data-id="${esc(id)}" aria-pressed="${isIn(id)}">${isIn(id)?tt('Annuler','Undo'):tt('Check-in','Check in')}</button></td></tr>`}).join('')}</tbody></table>${rows.length>400?`<p class="small muted">${tt('400 premiers affichés — affine la recherche ou exporte.','First 400 shown — refine or export.')}</p>`:''}</div>`}
+function fillCheckin(){const ins=[...CHK.entries()].sort((a,b)=>(b[1].at||'').localeCompare(a[1].at||''));const k=$('#cikpi');const conf=[...REGS.values()].filter(d=>d.status!=='waitlist').length;if(k)k.innerHTML=`<div class="kpi"><div class="n">${ins.length}</div><div class="l">${tt('Présents','Checked in')}</div></div><div class="kpi"><div class="n">${conf}</div><div class="l">${tt('Confirmés','Confirmed')}</div></div><div class="kpi"><div class="n">${conf?Math.round(ins.length/conf*100):0}%</div><div class="l">${tt('Taux de présence','Attendance rate')}</div></div>`;const l=$('#cilist');if(l)l.innerHTML=ins.length?`<div class="bars">${ins.slice(0,30).map(([id,c])=>{const d=REGS.get(id)||{};const r=RM[d.role]||ROLES[7];return `<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--line)"><span><b>${esc(d.name||id)}</b> <span style="color:${r.c}">· ${r.name}</span></span><span class="small muted" style="white-space:nowrap">${esc(d.passId||'')} · ${c.at?new Date(c.at).toLocaleTimeString(L):''}</span></div>`}).join('')}</div>`:`<div class="empty">${tt('Aucun check-in pour le moment.','No check-ins yet.')}</div>`}
+function findPass(q){q=q.trim().toUpperCase();const m=q.match(/SGQ-[A-Z0-9]{6}/);const pid=m?m[0]:q;for(const [id,d] of REGS)if((d.passId||'').toUpperCase()===pid)return [id,d];return null}
+function ciResult(hit){const el=$('#cires');if(!el)return;if(!hit){el.innerHTML=`<div class="alert">${tt('Pass introuvable. Vérifie l’identifiant.','Pass not found. Check the ID.')}</div>`;blip(180,.2,'sawtooth');return}const [id,d]=hit,r=RM[d.role]||ROLES[7],inn=isIn(id);el.innerHTML=`<div class="${d.status==='waitlist'?'notice':'okmsg'}" style="display:grid;gap:8px"><div style="font:700 22px var(--hf)">${esc(d.name)}</div><div style="color:${r.c};font-weight:600">${r.name}${d.org?' · '+esc(d.org):''}</div><div>${d.status==='waitlist'?t('wait'):t('conf')} · ${esc(d.passId)}</div>${inn?`<div>✓ ${tt('Déjà enregistré à','Already checked in at')} ${new Date(CHK.get(id).at).toLocaleTimeString(L)}</div>`:''}<div><button class="btn" data-a="aci" data-id="${esc(id)}" ${inn?'disabled':''}>${inn?tt('Présent','Checked in'):tt('Valider l’entrée','Confirm entry')}</button></div></div>`}
+async function toggleCI(id){const was=CHK.has(id);const at=new Date().toISOString();try{await api(`/rest/v1/registrations?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',body:{checked_in_at:was?null:at},prefer:'return=minimal'});if(was)CHK.delete(id);else CHK.set(id,{at});const r=REGS.get(id);if(r)r.checkedInAt=was?'':at;blip(880,.08);adminFill()}catch(e){const m=$('#amsg')||$('#cires');if(m)m.textContent=tt('Action impossible : ','Action failed: ')+(e.msg||e.code||'')}if(A.tab==='checkin'){const h=REGS.get(id);if(h)ciResult([id,h])}}
+function fiche(id){const d=REGS.get(id);if(!d)return;const r=RM[d.role]||ROLES[7];const sp=(SPEC[d.role]||[]).map(q=>{const v=d.spec&&d.spec[q.k];if(!v||(Array.isArray(v)&&!v.length))return '';return `<dt>${esc(tx(q))}</dt><dd>${esc(Array.isArray(v)?v.map(x=>tx(q.o.find(o=>o.id===x))).join(', '):v)}</dd>`}).join('');const lab=(list,ids)=>(ids||[]).map(x=>tx(list.find(o=>o.id===x))).join(' · ');
+ openModal(`<h2 id="mTitle" style="font-size:24px">${esc(d.name)}</h2><p style="color:${r.c};font-weight:600;margin:6px 0 16px">${r.name} · ${esc(d.passId)}</p><dl class="dl"><dt>E-mail</dt><dd>${esc(d.email)}</dd><dt>${t('phone')}</dt><dd>${esc(d.phoneCode)} ${esc(d.phone)}</dd><dt>${t('org')}</dt><dd>${esc(d.org||'—')}</dd><dt>${t('func')}</dt><dd>${esc(d.func)}</dd><dt>${t('region')}</dt><dd>${esc(regionLabel(d))}</dd><dt>${t('web')}</dt><dd>${esc(d.web||'—')}</dd><dt>${t('years')}</dt><dd>${esc(tx(YEARS.find(y=>y.id===d.years))||'—')}</dd>${sp}<dt>${t('thT')}</dt><dd>${esc(lab(THEMES,d.themes))}</dd><dt>${tt('Défis','Challenges')}</dt><dd>${esc(lab(CHAL,d.chal))}${d.chalO?' — '+esc(d.chalO):''}</dd><dt>${tt('Contribution','Contribution')}</dt><dd>${esc(d.contrib||'—')}</dd><dt>${tt('Attentes','Expectations')}</dt><dd>${esc(lab(EXPE,d.exp))}</dd><dt>${tt('Actualités','News')}</dt><dd>${d.news?tt('Oui','Yes'):tt('Non','No')}</dd><dt>${tt('Consentement','Consent')}</dt><dd>${esc(d.consentAt)} (v${esc(d.consentV)})</dd><dt>${tt('Inscription','Registered')}</dt><dd>${esc(new Date(d.createdAt).toLocaleString(L))} · ${esc(d.src)}</dd></dl>
+ <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px"><button class="btn" data-a="mclose">${t('close')}</button><button class="btn ghost" data-a="adel" data-id="${esc(id)}" id="bDel" style="color:var(--bad)">${tt('Supprimer (droit à l’effacement)','Delete (right to erasure)')}</button></div><div id="delMsg" class="small" style="margin-top:8px"></div>`)}
+async function delReg(id,btn){if(A.confirmDel!==id){A.confirmDel=id;btn.textContent=tt('Confirmer la suppression définitive','Confirm permanent deletion');$('#delMsg').textContent=tt('Clique une seconde fois pour supprimer.','Click again to delete.');return}try{await api(`/rest/v1/registrations?id=eq.${encodeURIComponent(id)}`,{method:'DELETE',prefer:'return=minimal'});REGS.delete(id);CHK.delete(id);A.confirmDel='';closeModal();adminFill()}catch(e){$('#delMsg').textContent=tt('Suppression impossible.','Deletion failed.')}}
+function settingsForm(){const c=CFG;const f=(k,lab,type='text',extra='')=>`<div class="fld"><label for="s_${k}">${lab}</label><input id="s_${k}" type="${type}" data-s="${k}" value="${esc(c[k])}" ${extra}></div>`;const cb=(k,lab)=>`<label class="check"><input type="checkbox" data-s="${k}" ${c[k]?'checked':''}><span>${lab}</span></label>`;
+ return `<form class="form panel" data-form="settings" style="max-width:820px">${f('title',tt('Titre officiel de l’atelier','Official workshop title'))}<div class="grid2">${f('date',tt('Date (texte affiché)','Date (display text)'),'text','placeholder="12–13 décembre 2026"')}${f('venue',tt('Lieu','Venue'))}</div>${f('obj',tt('Présentation courte des objectifs','Short description of goals'))}<div class="grid2">${f('capacity',tt('Capacité maximale (0 = illimitée)','Maximum capacity (0 = unlimited)'),'number','min="0" step="1"')}${f('privacyEmail',tt('E-mail pour les demandes RGPD / CDP','Email for data-protection requests'),'email')}</div>${f('controller',tt('Responsable du traitement (affiché dans la politique)','Data controller (shown in the policy)'))}
+ ${cb('open',tt('Inscriptions ouvertes','Registration open'))}${cb('qr',tt('Afficher un QR code sur les Gaming Pass (check-in sur place)','Show a QR code on Gaming Passes (on-site check-in)'))}${cb('emailSvc',tt('Les confirmations e-mail sont envoyées par l’équipe (à partir de l’export)','Email confirmations are sent by the team (from the export)'))}
+ <p class="small muted" style="margin:0">${tt('Au-delà de la capacité, les nouvelles inscriptions passent en liste d’attente.','Beyond capacity, new registrations go to the waitlist.')}</p><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><button class="btn" type="submit">${tt('Enregistrer','Save')}</button><span id="smsg" class="small" role="status"></span></div></form>`}
+async function saveSettings(form){const n={...CFG};form.querySelectorAll('[data-s]').forEach(i=>{const k=i.dataset.s;n[k]=i.type==='checkbox'?i.checked:i.type==='number'?Math.max(0,parseInt(i.value||'0',10)):i.value.trim()});const m=$('#smsg');const body={title:n.title,date:n.date,venue:n.venue,obj:n.obj,capacity:n.capacity,open:n.open,qr:n.qr,emailSvc:n.emailSvc,controller:n.controller,privacyEmail:n.privacyEmail};try{const up=await api(`/rest/v1/event_settings?id=eq.1`,{method:'PATCH',body:toDb(body),prefer:'return=representation'});if(!up||!up.length)throw {status:403};CFG={...CFG,...body};m.textContent=tt('Paramètres enregistrés.','Settings saved.');m.style.color='var(--g)'}catch(e){m.textContent=tt('Échec de l’enregistrement.','Save failed.');m.style.color='var(--bad)'}}
+/* exports */
+const COLS=[['passId','Pass'],['status','Statut'],['createdAt','Date'],['role','Profil'],['name','Nom'],['email','E-mail'],['phone','Téléphone'],['org','Organisation'],['func','Fonction'],['region','Région'],['country','Pays'],['web','Web'],['years','Expérience'],['spec1','Question profil 1'],['spec2','Question profil 2'],['themes','Thématiques'],['chal','Défis'],['chalO','Défi (autre)'],['contrib','Contribution'],['exp','Attentes'],['news','Opt-in actualités'],['consentAt','Consentement'],['checkin','Check-in'],['dup','Doublon possible'],['src','Source']];
+function rowsOut(){const dups=dupSet();return filtered().map(([id,d])=>{const sp=SPEC[d.role]||[];const spv=q=>{if(!q)return '';const v=d.spec&&d.spec[q.k];if(!v)return '';return tx(q)+' : '+(Array.isArray(v)?v.map(x=>tx(q.o.find(o=>o.id===x))).join(', '):v)};const lab=(list,ids)=>(ids||[]).map(x=>tx(list.find(o=>o.id===x))).join(' | ');return {passId:d.passId,status:d.status==='waitlist'?'Liste d’attente':'Confirmé',createdAt:d.createdAt,role:(RM[d.role]||{}).name||d.role,name:d.name,email:d.email,phone:`${d.phoneCode||''} ${d.phone||''}`.trim(),org:d.org,func:d.func,region:d.region==='intl'?'International':d.region,country:d.country,web:d.web,years:tx(YEARS.find(y=>y.id===d.years))||'',spec1:spv(sp[0]),spec2:spv(sp[1]),themes:lab(THEMES,d.themes),chal:lab(CHAL,d.chal),chalO:d.chalO,contrib:d.contrib,exp:lab(EXPE,d.exp),news:d.news?'Oui':'Non',consentAt:d.consentAt,checkin:isIn(id)?CHK.get(id).at:'',dup:dups.has(id)?'Oui':'',src:d.src}})}
+const safeCell=v=>{v=String(v??'');return /^[=+\-@\t\r]/.test(v)?"'"+v:v};
+async function exportCSV(){/*csv*/const rows=rowsOut();const csv='﻿'+[COLS.map(c=>c[1]),...rows.map(r=>COLS.map(c=>safeCell(r[c[0]])))].map(l=>l.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\r\n');await saveFile(`inscriptions-sgq-${new Date().toISOString().slice(0,10)}.csv`,csv)}
+function loadXLSX(){return window.XLSX?Promise.resolve(window.XLSX):loadScript(['vendor/xlsx.full.min.js','https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js']).then(()=>window.XLSX)}
+async function exportXLSX(){const m=$('#amsg');m.textContent=tt('Préparation du fichier Excel…','Preparing Excel file…');try{const X=await loadXLSX();const rows=rowsOut();const wb=X.utils.book_new();const ws=X.utils.aoa_to_sheet([COLS.map(c=>c[1]),...rows.map(r=>COLS.map(c=>safeCell(r[c[0]])))]);ws['!cols']=COLS.map(c=>({wch:['contrib','themes','chal','exp'].includes(c[0])?40:18}));X.utils.book_append_sheet(wb,ws,'Inscriptions');
+ const rc=count(d=>d.role),reg=count(d=>d.region),th=count(d=>d.themes),ch=count(d=>d.chal),ex=count(d=>d.exp);const syn=[['Synthèse',CFG.title],['Total inscriptions',REGS.size],[],['Profil','Nombre'],...ROLES.map(r=>[r.name,rc[r.id]||0]),[],['Région','Nombre'],...REGIONS.map(x=>[x,reg[x]||0]),['International',reg.intl||0],[],['Thématique','Nombre'],...THEMES.map(x=>[x.fr,th[x.id]||0]),[],['Défi','Nombre'],...CHAL.map(x=>[x.fr,ch[x.id]||0]),[],['Attente','Nombre'],...EXPE.map(x=>[x.fr,ex[x.id]||0])];const ws2=X.utils.aoa_to_sheet(syn);ws2['!cols']=[{wch:60},{wch:14}];X.utils.book_append_sheet(wb,ws2,'Synthèse');
+ const buf=X.write(wb,{bookType:'xlsx',type:'array'});m.textContent='';await saveFile(`inscriptions-sgq-${new Date().toISOString().slice(0,10)}.xlsx`,buf)}catch(e){m.textContent=tt('Export Excel indisponible (bibliothèque non chargée). Utilise l’export CSV.','Excel export unavailable (library didn’t load). Use CSV export.')}}
+async function saveFile(name,data){const type=name.endsWith('.csv')?'text/csv;charset=utf-8':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';saveBlob(name,new Blob([data],{type}))}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,id=b.dataset.id;
+ switch(a){
+ case 'home':blip(500,.05);go('home');break;
+ case 'start':blip(660,.08);fanfare();if(!S.role)S.view='m1';go(S.view==='home'||S.view==='done'?'m1':S.view);break;
+ case 'showpass':go('done');break;
+ case 'role':S.role=id;document.querySelectorAll('.pc').forEach(c=>c.setAttribute('aria-checked',c.dataset.id===id));$('#n1').disabled=false;blip(700,.06);saveDraft();live(RM[id].name);clearTimeout(window.__rt);window.__rt=setTimeout(()=>{if(S.view==='m1')next()},PREF.rm?150:420);break;
+ case 'next':next();break;
+ case 'prev':blip(420,.05);go(STEPS[STEPS.indexOf(S.view)-1]||'home');break;
+ case 'goto':go(id);break;
+ case 'chip':toggleChip(b);break;
+ case 'submit':submit();break;
+ case 'dlpass':dlPass();break;
+ case 'newreg':MINE=null;S=blank();go('m1');break;
+ case 'find':openFind();break;
+ case 'logout':logout();break;
+ case 'reload':loadRegs();break;
+ case 'privacy':privacy();break;
+ case 'mclose':closeModal();break;
+ case 'lang':L=L==='fr'?'en':'fr';LS.set('sgq.lang',L);errs={};render(false);break;
+ case 'snd':PREF.snd=!PREF.snd;LS.set('sgq.pref',PREF);chrome();blip(880,.08);break;
+ case 'rm':PREF.rm=!PREF.rm;LS.set('sgq.pref',PREF);chrome();fxApply();break;
+ case 'admin':history.replaceState(null,'','#admin');S.view='admin';adminSubscribe();render();break;
+ case 'atab':A.tab=id;render(false);break;
+ case 'afiche':fiche(id);break;
+ case 'aci':toggleCI(id);break;
+ case 'adel':delReg(id,b);break;
+ case 'csv':exportCSV();break;
+ case 'xlsx':exportXLSX();break;
+ }});
+document.addEventListener('input',e=>{const el=e.target;if(el.dataset.f){S.f[el.dataset.f]=el.value;if(errs[el.dataset.f]){delete errs[el.dataset.f];el.removeAttribute('aria-invalid');const er=$('#e_'+el.dataset.f);if(er)er.textContent=''}if(el.dataset.f==='region'){const w=$('#wCountry');if(w)w.hidden=el.value!=='intl'}saveDraft()}
+ else if(el.dataset.sp){S.spec[el.dataset.sp]=el.value;saveDraft()}
+ else if(el.dataset.x){S[el.dataset.x]=el.value;if(el.dataset.x==='contrib')$('#cc').textContent=el.value.length+'/250';saveDraft()}
+ else if(el.dataset.af){A[el.dataset.af]=el.value;fillPeople()}});
+document.addEventListener('change',e=>{const el=e.target;if(el.dataset.c){S[el.dataset.c]=el.checked;if(el.dataset.c==='consent'&&el.checked){delete errs.consent;$('#e_consent').textContent=''}saveDraft()}else if(el.dataset.af){A[el.dataset.af]=el.value;fillPeople()}else if(el.dataset.f){S.f[el.dataset.f]=el.value;saveDraft()}});
+document.addEventListener('submit',e=>{e.preventDefault();const f=e.target.dataset.form;if(f==='settings')saveSettings(e.target);else if(f==='login')login(e.target);else if(f==='find')doFind();else if(f==='ci'){const v=$('#ciq').value;ciResult(findPass(v));$('#ciq').select()}else if(f==='m2')next()});
+addEventListener('hashchange',()=>{if(location.hash==='#admin'){S.view='admin';adminSubscribe();render()}else if(location.hash==='#retrouver')openFind()});
+addEventListener('online',()=>{if(lastErr===t('eNet')){lastErr='';if(S.view==='m4')render(false)}});
+
+/* ---------- boot ---------- */
+fxSize();fxApply();render(false);
+if(restored){setTimeout(()=>live(t('resume')),400)}
+loadScript(['vendor/qrcode.min.js','https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js']).then(()=>{if(S.view==='done')render(false)}).catch(()=>{});
+async function loadCfg(){try{const j=await api('/rest/v1/event_settings?select=*&id=eq.1',{anon:true,keep:true});const it=j&&j[0]?fromDb(j[0]):null;if(it){CFGID=it.id;CFG={...CFG_DEF};for(const k in CFG_DEF)if(it[k]!==undefined&&it[k]!==null)CFG[k]=it[k]}OFFLINE=false}catch(e){OFFLINE=true}DBREADY=true;if(['home','done'].includes(S.view)||(S.view==='admin'&&A.tab!=='settings'))render(false)}
+(async()=>{await loadCfg();
+ if(TOK){try{const ok=await api('/rest/v1/rpc/is_organizer',{method:'POST',body:{}});if(ok===true)ADMIN=true;else logout(false)}catch(e){if(e.status===401||e.status===403)logout(false)}}
+ if(location.hash==='#admin'){S.view='admin';if(ADMIN)adminSubscribe();render()}else if(location.hash==='#retrouver')openFind();
+ chrome();setInterval(()=>{if(OFFLINE)loadCfg()},20000)})();
+}
+</script>
+</body>
+</html>
